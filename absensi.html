@@ -3,7 +3,7 @@
   <head>
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1" />
-    <title>Smart Presence</title>
+    <title>Smart Presence | Edu Media 24</title>
     <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
     <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
@@ -290,7 +290,6 @@
       Swal.fire({
         title: "Yakin logout?",
         text: "Anda akan keluar dari akun ini.",
-        icon: "warning",
         showCancelButton: true,
         confirmButtonText: "Logout",
         cancelButtonText: "Batal"
@@ -299,8 +298,11 @@
           sessionStorage.removeItem("isLoggedIn");
           sessionStorage.removeItem("username");
           updateMenu(false);
+          document.getElementById("loginUsername").value = "";
+          document.getElementById("loginPassword").value = "";
           Swal.fire("Logout berhasil", "", "success");
         }
+
       });
     } else {
       loginModal.show();
@@ -311,22 +313,29 @@
     const username = document.getElementById("loginUsername").value.trim();
     const password = document.getElementById("loginPassword").value.trim();
     const errorMsg = document.getElementById("errorMsg");
+    const btnLogin = document.getElementById("btnLoginModal");
 
+    errorMsg.style.display = "none";
     if (!username || !password) {
       errorMsg.style.display = "block";
       errorMsg.textContent = "Silakan isi semua kolom!";
       return;
     }
 
-    try {
-      const res = await fetch(`${urlLogin}?action=login&username=${encodeURIComponent(username)}&password=${encodeURIComponent(password)}`);
-      const data = await res.json();
+    btnLogin.innerHTML = '<i class="fa-solid fa-spinner fa-spin me-2"></i> Memproses...';
+    btnLogin.disabled = true;
 
+    try {
+      const res = await fetch(
+        `${urlLogin}?action=login&username=${encodeURIComponent(username)}&password=${encodeURIComponent(password)}`
+      );
+      const data = await res.json();
       if (data.result === "success") {
         sessionStorage.setItem("isLoggedIn", "true");
         sessionStorage.setItem("username", username);
         updateMenu(true);
         loginModal.hide();
+
         Swal.fire("Login Berhasil!", `Selamat datang, ${username}`, "success");
       } else {
         errorMsg.style.display = "block";
@@ -334,8 +343,12 @@
       }
     } catch (err) {
       Swal.fire("Error", "Gagal menghubungkan ke server.", "error");
+    } finally {
+      btnLogin.innerHTML = '<i class="fa-solid fa-right-to-bracket me-2"></i> Masuk';
+      btnLogin.disabled = false;
     }
   });
+
 
   function updateMenu(isLoggedIn) {
     if (isLoggedIn) {
@@ -349,33 +362,46 @@
     }
   }
 
-  const PASSWORD_ABSENSI = "123";
-  const urlScript = "https://script.google.com/macros/s/AKfycbwpVdZeuRZSgqzVeWcpYLjpwdHg8JODzO55OWUe1d9J5DsUa4J11YhK537eQOXWOp8XPQ/exec";
-  let html5QrCode;
-  let isScannerActive = false;
-  let currentCamera = "environment";
+    let PASSWORD_ABSENSI = "";
+    const urlScript = "https://script.google.com/macros/s/AKfycbwpVdZeuRZSgqzVeWcpYLjpwdHg8JODzO55OWUe1d9J5DsUa4J11YhK537eQOXWOp8XPQ/exec";
+    let html5QrCode;
+    let isScannerActive = false;
+    let currentCamera = "environment";
+    const passwordModalEl = document.getElementById("passwordModal");
+    const absensiModalEl = document.getElementById("absensiModal");
+    const absensiModal = new bootstrap.Modal(absensiModalEl);
+    document.addEventListener("DOMContentLoaded", async () => {
+      try {
+        const res = await fetch(`${urlScript}?action=getAbsensiPassword`);
+        const data = await res.json();
+        PASSWORD_ABSENSI = data.password || "";
+        console.log("Password absensi berhasil dimuat:", PASSWORD_ABSENSI);
+      } catch (err) {
+        console.error("Gagal mengambil password absensi:", err);
+        Swal.fire("Gagal!", "Tidak dapat memuat password absensi dari server.", "error");
+      }
+      const isInAbsensi = sessionStorage.getItem("isInAbsensi");
+      if (isInAbsensi === "true") absensiModal.show();
+    });
 
-  const passwordModalEl = document.getElementById("passwordModal");
-  const absensiModalEl = document.getElementById("absensiModal");
-  const absensiModal = new bootstrap.Modal(absensiModalEl);
+    document.getElementById("btnMasuk").addEventListener("click", function () {
+      const inputPassword = document.getElementById("absenPassword").value.trim();
+      const errorMsg = document.getElementById("errorMsg");
+      if (inputPassword === PASSWORD_ABSENSI) {
+        errorMsg.style.display = "none";
+        this.innerHTML = '<i class="fa-solid fa-spinner fa-spin me-2"></i> Memproses...';
+        this.disabled = true;
 
-  document.getElementById("btnMasuk").addEventListener("click", function() {
-    const inputPassword = document.getElementById("absenPassword").value;
-    const errorMsg = document.getElementById("errorMsg");
-    if (inputPassword === PASSWORD_ABSENSI) {
-      errorMsg.style.display = "none";
-      this.innerHTML = '<i class="fa-solid fa-spinner fa-spin me-2"></i> Memproses...';
-      this.disabled = true;
-      setTimeout(() => {
-        bootstrap.Modal.getInstance(passwordModalEl).hide();
-        sessionStorage.setItem("isLoggedIn", "true");
-        sessionStorage.setItem("isInAbsensi", "true");
-        absensiModal.show();
-        this.innerHTML = '<i class="fa-solid fa-right-to-bracket me-2"></i> Masuk';
-        this.disabled = false;
-      }, 800);
-    } else {
-      errorMsg.style.display = "block";
+        setTimeout(() => {
+          bootstrap.Modal.getInstance(passwordModalEl).hide();
+          sessionStorage.setItem("isLoggedIn", "true");
+          sessionStorage.setItem("isInAbsensi", "true");
+          absensiModal.show();
+          this.innerHTML = '<i class="fa-solid fa-right-to-bracket me-2"></i> Masuk';
+          this.disabled = false;
+        }, 800);
+      } else {
+        errorMsg.style.display = "block";
     }
   });
 
@@ -467,6 +493,7 @@
         minute: "2-digit",
         second: "2-digit"
       });
+
       const data = JSON.parse(decodedText);
       document.getElementById("hasil").innerHTML = `
         <div class="alert alert-info mt-3 text-start shadow-sm">
@@ -518,7 +545,7 @@
       Swal.fire("QR Code Error", "Format QR tidak valid!", "error").then(() => startScanner());
     }
   }
-  
+
   function onScanFailure(error) {
   }
 
