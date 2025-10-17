@@ -456,8 +456,12 @@
   function onScanSuccess(decodedText) {
     stopScanner();
     document.getElementById("hasil").innerHTML = `
-      <div class="alert alert-info mt-3">
-        Data terbaca:<br><b>${decodedText}</b>
+      <div class="alert alert-info mt-3 text-start">
+        <h5 class="fw-bold text-primary mb-2">Data Terbaca:</h5>
+        <p class="mb-1"><b>Nama:</b> ${data.nama || "-"}</p>
+        <p class="mb-1"><b>Jenis Kelamin:</b> ${data.jk || data.jenisKelamin || "-"}</p>
+        <p class="mb-1"><b>NIS:</b> ${data.nis || data.nisn || "-"}</p>
+        <p class="mb-1"><b>Kelas:</b> ${data.kelas || "-"}</p>
       </div>
     `;
     try {
@@ -489,7 +493,7 @@
       Swal.fire("QR Code Error", "Format QR tidak valid!", "error").then(() => startScanner());
     }
   }
-
+  
   function onScanFailure(error) {
   }
 
