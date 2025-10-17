@@ -454,7 +454,10 @@
   }
 
   function onScanSuccess(decodedText) {
-    stopScanner();
+  stopScanner();
+
+  try {
+    const data = JSON.parse(decodedText);
     document.getElementById("hasil").innerHTML = `
       <div class="alert alert-info mt-3 text-start">
         <h5 class="fw-bold text-primary mb-2">Data Terbaca:</h5>
@@ -464,31 +467,38 @@
         <p class="mb-1"><b>Kelas:</b> ${data.kelas || "-"}</p>
       </div>
     `;
-    try {
-      const data = JSON.parse(decodedText);
-      Swal.fire({
-        title: "Mengirim data...",
-        text: "Mohon tunggu sebentar",
-        didOpen: () => Swal.showLoading(),
-        allowOutsideClick: false
-      });
+    Swal.fire({
+      title: "Mengirim data...",
+      text: "Mohon tunggu sebentar",
+      didOpen: () => Swal.showLoading(),
+      allowOutsideClick: false
+    });
 
-      fetch(urlScript, {
-        method: "POST",
-        body: JSON.stringify(data)
+    fetch(urlScript, {
+      method: "POST",
+      body: JSON.stringify(data)
+    })
+      .then(r => r.text())
+      .then(res => {
+        if (res.startsWith("OK")) {
+          Swal.fire({
+            icon: "success",
+            title: "OK ✅",
+            text: res.replace("OK: ", ""),
+            timer: 2000,
+            showConfirmButton: false
+          });
+          setTimeout(() => {
+            document.getElementById("hasil").innerHTML = "";
+            startScanner();
+          }, 2000);
+        } else {
+          Swal.fire("Gagal!", res, "error").then(() => startScanner());
+        }
       })
-        .then(r => r.text())
-        .then(res => {
-          if (res.startsWith("OK")) {
-            Swal.fire({ icon: "success", title: "OK ✅", text: res.replace("OK: ", ""), timer: 2000, showConfirmButton: false });
-            setTimeout(() => { document.getElementById("hasil").innerHTML = ""; startScanner(); }, 2000);
-          } else {
-            Swal.fire("Gagal!", res, "error").then(() => startScanner());
-          }
-        })
-        .catch(() => {
-          Swal.fire("Gagal!", "Tidak dapat mengirim data ke server!", "error").then(() => startScanner());
-        });
+      .catch(() => {
+        Swal.fire("Gagal!", "Tidak dapat mengirim data ke server!", "error").then(() => startScanner());
+      });
     } catch (e) {
       Swal.fire("QR Code Error", "Format QR tidak valid!", "error").then(() => startScanner());
     }
