@@ -456,11 +456,32 @@ async function switchCamera() {
 
 function onScanSuccess(decodedText) {
   stopScanner();
+  const waktuSekarang = new Date().toLocaleString("en-US", { timeZone: "Asia/Makassar" });
+  const now = new Date(waktuSekarang);
+  const hours = now.getHours();
+  const minutes = now.getMinutes();
+  const currentTime = hours * 60 + minutes;
+  const startTime = 14 * 60 + 30; 
+  const endTime = 16 * 60; 
+
+  if (currentTime < startTime || currentTime > endTime) {
+    Swal.fire({
+      icon: "warning",
+      title: "Belum waktunya pulang!",
+      text: "Absensi pulang hanya dapat dilakukan antara pukul 14.30 hingga 16.00 WITA.",
+      confirmButtonText: "OK"
+    }).then(() => {
+      startScanner(); 
+    });
+    return;
+  }
+
   document.getElementById("hasil").innerHTML = `
     <div class="alert alert-info mt-3">
       Data terbaca:<br><b>${decodedText}</b>
     </div>
   `;
+
   try {
     const data = JSON.parse(decodedText);
     Swal.fire({
@@ -477,8 +498,17 @@ function onScanSuccess(decodedText) {
       .then(r => r.text())
       .then(res => {
         if (res.startsWith("OK")) {
-          Swal.fire({ icon: "success", title: "OK ✅", text: res.replace("OK: ", ""), timer: 2000, showConfirmButton: false });
-          setTimeout(() => { document.getElementById("hasil").innerHTML = ""; startScanner(); }, 2000);
+          Swal.fire({
+            icon: "success",
+            title: "OK ✅",
+            text: res.replace("OK: ", ""),
+            timer: 2000,
+            showConfirmButton: false
+          });
+          setTimeout(() => {
+            document.getElementById("hasil").innerHTML = "";
+            startScanner();
+          }, 2000);
         } else {
           Swal.fire("Gagal!", res, "error").then(() => startScanner());
         }
@@ -490,6 +520,7 @@ function onScanSuccess(decodedText) {
     Swal.fire("QR Code Error", "Format QR tidak valid!", "error").then(() => startScanner());
   }
 }
+
 
 function onScanFailure(error) {
 }
