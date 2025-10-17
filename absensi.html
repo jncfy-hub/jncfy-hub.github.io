@@ -454,61 +454,71 @@
   }
 
   function onScanSuccess(decodedText) {
-  stopScanner();
+    stopScanner();
+    try {
+      const waktuSekarang = new Date().toLocaleString("en-US", { timeZone: "Asia/Makassar" });
+      const now = new Date(waktuSekarang);
+      const waktuMasuk = now.toLocaleString("id-ID", {
+        timeZone: "Asia/Makassar",
+        hour12: false,
+        day: "2-digit",
+        month: "2-digit",
+        year: "numeric",
+        hour: "2-digit",
+        minute: "2-digit",
+        second: "2-digit"
+      });
+      const data = JSON.parse(decodedText);
+      document.getElementById("hasil").innerHTML = `
+        <div class="alert alert-info mt-3 text-start shadow-sm">
+          <h5 class="fw-bold text-primary mb-3">Data Terbaca:</h5>
+          <p class="mb-1"><b>Nama:</b> ${data.nama || "-"}</p>
+          <p class="mb-1"><b>Jenis Kelamin:</b> ${data.jk || data.jenisKelamin || "-"}</p>
+          <p class="mb-1"><b>NIS:</b> ${data.nis || data.nisn || "-"}</p>
+          <p class="mb-1"><b>Kelas:</b> ${data.kelas || "-"}</p>
+          <hr class="my-2">
+          <p class="mb-0 text-secondary"><b>Waktu Masuk:</b> ${waktuMasuk} WITA</p>
+        </div>
+      `;
 
-  try {
-    // 1️⃣ Parse data dulu
-    const data = JSON.parse(decodedText);
-
-    // 2️⃣ Baru tampilkan hasilnya di bawah
-    document.getElementById("hasil").innerHTML = `
-      <div class="alert alert-info mt-3 text-start">
-        <h5 class="fw-bold text-primary mb-2">📋 Data Terbaca:</h5>
-        <p class="mb-1"><b>Nama:</b> ${data.nama || "-"}</p>
-        <p class="mb-1"><b>Jenis Kelamin:</b> ${data.jk || data.jenisKelamin || "-"}</p>
-        <p class="mb-1"><b>NIS:</b> ${data.nis || data.nisn || "-"}</p>
-        <p class="mb-1"><b>Kelas:</b> ${data.kelas || "-"}</p>
-      </div>
-    `;
-
-    // 3️⃣ Kirim ke Google Apps Script
-    Swal.fire({
-      title: "Mengirim data...",
-      text: "Mohon tunggu sebentar",
-      didOpen: () => Swal.showLoading(),
-      allowOutsideClick: false
-    });
-
-    fetch(urlScript, {
-      method: "POST",
-      body: JSON.stringify(data)
-    })
-      .then(r => r.text())
-      .then(res => {
-        if (res.startsWith("OK")) {
-          Swal.fire({
-            icon: "success",
-            title: "OK ✅",
-            text: res.replace("OK: ", ""),
-            timer: 2000,
-            showConfirmButton: false
-          });
-          setTimeout(() => {
-            document.getElementById("hasil").innerHTML = "";
-            startScanner();
-          }, 2000);
-        } else {
-          Swal.fire("Gagal!", res, "error").then(() => startScanner());
-        }
-      })
-      .catch(() => {
-        Swal.fire("Gagal!", "Tidak dapat mengirim data ke server!", "error").then(() => startScanner());
+      Swal.fire({
+        title: "Mengirim data...",
+        text: "Mohon tunggu sebentar",
+        didOpen: () => Swal.showLoading(),
+        allowOutsideClick: false
       });
 
-  } catch (e) {
-    Swal.fire("QR Code Error", "Format QR tidak valid!", "error").then(() => startScanner());
+      data.waktuMasuk = waktuMasuk;
+      fetch(urlScript, {
+        method: "POST",
+        body: JSON.stringify(data)
+      })
+        .then(r => r.text())
+        .then(res => {
+          if (res.startsWith("OK")) {
+            Swal.fire({
+              icon: "success",
+              title: "OK ✅",
+              text: res.replace("OK: ", ""),
+              timer: 2000,
+              showConfirmButton: false
+            });
+            setTimeout(() => {
+              document.getElementById("hasil").innerHTML = "";
+              startScanner();
+            }, 2000);
+          } else {
+            Swal.fire("Gagal!", res, "error").then(() => startScanner());
+          }
+        })
+        .catch(() => {
+          Swal.fire("Gagal!", "Tidak dapat mengirim data ke server!", "error").then(() => startScanner());
+        });
+
+    } catch (e) {
+      Swal.fire("QR Code Error", "Format QR tidak valid!", "error").then(() => startScanner());
+    }
   }
-}
   
   function onScanFailure(error) {
   }
