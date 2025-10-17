@@ -454,45 +454,61 @@
   }
 
   function onScanSuccess(decodedText) {
-    stopScanner();
+  stopScanner();
+
+  try {
+    // 1️⃣ Parse data dulu
+    const data = JSON.parse(decodedText);
+
+    // 2️⃣ Baru tampilkan hasilnya di bawah
     document.getElementById("hasil").innerHTML = `
       <div class="alert alert-info mt-3 text-start">
-        <h5 class="fw-bold text-primary mb-2">Data Terbaca:</h5>
+        <h5 class="fw-bold text-primary mb-2">📋 Data Terbaca:</h5>
         <p class="mb-1"><b>Nama:</b> ${data.nama || "-"}</p>
         <p class="mb-1"><b>Jenis Kelamin:</b> ${data.jk || data.jenisKelamin || "-"}</p>
         <p class="mb-1"><b>NIS:</b> ${data.nis || data.nisn || "-"}</p>
         <p class="mb-1"><b>Kelas:</b> ${data.kelas || "-"}</p>
       </div>
     `;
-    try {
-      const data = JSON.parse(decodedText);
-      Swal.fire({
-        title: "Mengirim data...",
-        text: "Mohon tunggu sebentar",
-        didOpen: () => Swal.showLoading(),
-        allowOutsideClick: false
+
+    // 3️⃣ Kirim ke Google Apps Script
+    Swal.fire({
+      title: "Mengirim data...",
+      text: "Mohon tunggu sebentar",
+      didOpen: () => Swal.showLoading(),
+      allowOutsideClick: false
+    });
+
+    fetch(urlScript, {
+      method: "POST",
+      body: JSON.stringify(data)
+    })
+      .then(r => r.text())
+      .then(res => {
+        if (res.startsWith("OK")) {
+          Swal.fire({
+            icon: "success",
+            title: "OK ✅",
+            text: res.replace("OK: ", ""),
+            timer: 2000,
+            showConfirmButton: false
+          });
+          setTimeout(() => {
+            document.getElementById("hasil").innerHTML = "";
+            startScanner();
+          }, 2000);
+        } else {
+          Swal.fire("Gagal!", res, "error").then(() => startScanner());
+        }
+      })
+      .catch(() => {
+        Swal.fire("Gagal!", "Tidak dapat mengirim data ke server!", "error").then(() => startScanner());
       });
 
-      fetch(urlScript, {
-        method: "POST",
-        body: JSON.stringify(data)
-      })
-        .then(r => r.text())
-        .then(res => {
-          if (res.startsWith("OK")) {
-            Swal.fire({ icon: "success", title: "OK ✅", text: res.replace("OK: ", ""), timer: 2000, showConfirmButton: false });
-            setTimeout(() => { document.getElementById("hasil").innerHTML = ""; startScanner(); }, 2000);
-          } else {
-            Swal.fire("Gagal!", res, "error").then(() => startScanner());
-          }
-        })
-        .catch(() => {
-          Swal.fire("Gagal!", "Tidak dapat mengirim data ke server!", "error").then(() => startScanner());
-        });
-    } catch (e) {
-      Swal.fire("QR Code Error", "Format QR tidak valid!", "error").then(() => startScanner());
-    }
+  } catch (e) {
+    Swal.fire("QR Code Error", "Format QR tidak valid!", "error").then(() => startScanner());
   }
+}
   
   function onScanFailure(error) {
   }
