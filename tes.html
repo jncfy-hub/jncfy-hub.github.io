@@ -142,18 +142,33 @@
   </div>
 
   <!-- EXAM -->
-  <div id="examContainer">
-    <div class="pdf-viewer">
-      <iframe src="https://drive.google.com/file/d/1LVRvQf8FqltAgzNzzVY-mGOZG0efzsC0/preview" allow="autoplay"></iframe>
+<div id="examContainer">
+  <div class="pdf-viewer d-flex flex-column">
+    <div id="pdfContainer" style="flex:1; overflow:hidden; display:flex; justify-content:center; align-items:center; background:#f0f0f0;">
+      <iframe id="pdfFrame" 
+        src="https://drive.google.com/file/d/1LVRvQf8FqltAgzNzzVY-mGOZG0efzsC0/preview" 
+        allow="autoplay"
+        style="width:90%; height:90%; border:none; pointer-events:none; transform:scale(1); transform-origin:center center; transition:transform 0.3s ease;">
+      </iframe>
     </div>
 
-    <div class="answer-section">
-      <div>
-        <h4><i class="fa-solid fa-pen"></i> Jawaban</h4>
-        <p><strong>Nama:</strong> <span id="userName"></span><br>
-        <strong>Kelas:</strong> <span id="userClass"></span></p>
+    <div class="text-center py-2 bg-white border-top">
+      <button id="zoomOutBtn" class="btn btn-outline-secondary me-2">
+        <i class="fa-solid fa-magnifying-glass-minus"></i> Zoom Out
+      </button>
+      <button id="zoomInBtn" class="btn btn-outline-primary">
+        <i class="fa-solid fa-magnifying-glass-plus"></i> Zoom In
+      </button>
+    </div>
+  </div>
 
-       <form id="examForm">
+  <div class="answer-section">
+    <div>
+      <h4><i class="fa-solid fa-pen"></i> Lembar Jawaban</h4>
+      <p><strong>Nama:</strong> <span id="userName"></span><br>
+      <strong>Kelas:</strong> <span id="userClass"></span></p>
+
+      <form id="examForm">
         <!-- Soal 1 -->
         <div class="question-row">
           <span>1.</span>
@@ -264,12 +279,13 @@
           </div>
         </div>
       </form>
-      </div>
-      <button id="submitBtn" class="btn btn-primary w-100 submit-btn">
-        <i class="fa-solid fa-paper-plane"></i> Kirim Jawaban
-      </button>
     </div>
+    <button id="submitBtn" class="btn btn-primary w-100 submit-btn">
+      <i class="fa-solid fa-paper-plane"></i> Kirim Jawaban
+    </button>
   </div>
+</div>
+
 
 <script>
   const welcomeScreen = document.getElementById("welcomeScreen");
@@ -339,7 +355,30 @@
     document.getElementById("kelas").value = "";
   }
 });
-</script>
 
+  // ======== ZOOM FUNCTION ========
+  const pdfFrame = document.getElementById("pdfFrame");
+  const zoomInBtn = document.getElementById("zoomInBtn");
+  const zoomOutBtn = document.getElementById("zoomOutBtn");
+
+  let zoomLevel = 1;
+  const zoomStep = 0.1;
+  const maxZoom = 2;
+  const minZoom = 0.7;
+
+  zoomInBtn.addEventListener("click", () => {
+    if (zoomLevel < maxZoom) {
+      zoomLevel += zoomStep;
+      pdfFrame.style.transform = `scale(${zoomLevel})`;
+    }
+  });
+
+  zoomOutBtn.addEventListener("click", () => {
+    if (zoomLevel > minZoom) {
+      zoomLevel -= zoomStep;
+      pdfFrame.style.transform = `scale(${zoomLevel})`;
+    }
+  });
+</script>
 </body>
 </html>
