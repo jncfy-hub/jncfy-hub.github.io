@@ -81,7 +81,9 @@
         border: none;
         touch-action: pan-x pan-y pinch-zoom; /* izinkan gerakan pinch */
       }
-
+    .part10{
+      margin-left: -10px;
+    }
     .answer-section {
       width:33%; background:#fff; padding:1.5rem;
       display:flex; flex-direction:column;
@@ -256,8 +258,8 @@
             <label><input type="radio" name="soal9" value="D"> D</label>
           </div>
         </div>
-
-        <!-- Soal 10 -->
+         <!-- Soal 10 -->
+        <div class="part10">
         <div class="question-row">
           <span>10.</span>
           <div class="options">
@@ -267,9 +269,19 @@
             <label><input type="radio" name="soal10" value="D"> D</label>
           </div>
         </div>
+
+        <div class="question-row">
+          <span>11.</span>
+          <div class="options">
+            <label><input type="radio" name="soal11" value="A"> A</label>
+            <label><input type="radio" name="soal11" value="B"> B</label>
+            <label><input type="radio" name="soal11" value="C"> C</label>
+            <label><input type="radio" name="soal11" value="D"> D</label>
+          </div>
+        </div>
+      </div>
       </form>
       </div>
-
       <button id="submitBtn" class="btn btn-primary w-100 submit-btn">
         <i class="fa-solid fa-paper-plane"></i> Kirim Jawaban
       </button>
