@@ -12,18 +12,51 @@
       width: 100%; height: 100%;
       background-color: #f8f9fa;
       font-family: 'Poppins', sans-serif;
+      overflow: hidden;
     }
+
+    /* SPLASH SCREEN */
+    #welcomeScreen {
+      position: fixed; inset: 0;
+      background: linear-gradient(135deg, #007bff, #00c3ff);
+      color: white;
+      display: flex;
+      flex-direction: column;
+      justify-content: center;
+      align-items: center;
+      text-align: center;
+      z-index: 20;
+    }
+    #welcomeScreen img {
+      width: 120px;
+      height: 120px;
+      margin-bottom: 1rem;
+      border-radius: 50%;
+      background: white;
+      padding: 10px;
+      box-shadow: 0 0 20px rgba(255,255,255,0.5);
+    }
+    #welcomeScreen h1 {
+      font-size: 1.8rem;
+      font-weight: 600;
+      margin-bottom: 2rem;
+    }
+
     /* LOGIN SCREEN */
     #loginScreen {
       position: fixed; inset: 0;
-      background: linear-gradient(135deg,#007bff,#00c3ff);
-      display: flex; flex-direction: column;
-      justify-content: center; align-items: center;
-      color: white; text-align: center; z-index: 10;
+      background: linear-gradient(135deg, #007bff, #00c3ff);
+      display: none;
+      flex-direction: column;
+      justify-content: center;
+      align-items: center;
+      color: white; text-align: center;
+      z-index: 10;
     }
     #loginBox {
       background: rgba(255,255,255,0.15);
-      padding: 2rem; border-radius: 20px;
+      padding: 2rem;
+      border-radius: 20px;
       backdrop-filter: blur(10px);
       width: 90%; max-width: 400px;
       box-shadow: 0 4px 20px rgba(0,0,0,0.2);
@@ -33,7 +66,8 @@
 
     /* EXAM SCREEN */
     #examContainer {
-      display:none; flex-direction:row;
+      display:none;
+      flex-direction:row;
       width:100vw; height:100vh; overflow:hidden;
       background:#f8f9fa;
     }
@@ -45,30 +79,28 @@
       width:100%; height:100%; border:none;
     }
     .answer-section {
-      width:35%; background:#fff; padding:1.5rem;
+      width:30%; background:#fff; padding:1.5rem;
       display:flex; flex-direction:column;
       justify-content:space-between; overflow-y:auto;
     }
     .answer-section h4 {
       text-align:center; margin-bottom:1rem; font-weight:600;
     }
-    /* LJK style */
     .question-row {
       display:flex; align-items:center;
-      gap:1.5rem; margin-bottom:0.8rem;
-      font-size:1rem;
+      gap:1.5rem; margin-bottom:0.8rem; font-size:1rem;
     }
     .options {display:flex; gap:1.2rem;}
     .options label {cursor:pointer; display:flex; align-items:center; gap:0.3rem;}
     input[type="radio"] {transform:scale(1.2);}
     .submit-btn {margin-top:1rem; font-weight:600;}
 
-    /* Peringatan Landscape */
+    /* Landscape Warning */
     #landscapeWarning {
       display:none; position:fixed; inset:0;
       background:rgba(0,0,0,0.85); color:white;
-      justify-content:center; align-items:center;
-      text-align:center; font-size:1.2rem;
+      justify-content:center; align-items:left;
+      text-align:left; font-size:1.2rem;
       padding:20px; z-index:9999;
     }
     @media (max-width:768px) {
@@ -80,6 +112,16 @@
   </style>
 </head>
 <body>
+
+  <!-- WELCOME SCREEN -->
+  <div id="welcomeScreen">
+    <img src="https://lh3.googleusercontent.com/z758kRDT4zZpMf7_oi7p8gikCZtBEc9LLL5Uokunegi69Gi2swuS_bP8MqNi83Of8KeS9ytOCHqOUafSxQ" alt="Logo JNC">
+    <h1>Welcome To Online Examination</h1>
+    <button id="startBtn" class="btn btn-light px-4 py-2 fw-bold">
+      <i class="fa-solid fa-play"></i> Start Test
+    </button>
+  </div>
+
   <!-- LOGIN -->
   <div id="loginScreen">
     <div id="loginBox">
@@ -94,12 +136,12 @@
     </div>
   </div>
 
-  <!-- Peringatan Landscape -->
+  <!-- Warning Landscape -->
   <div id="landscapeWarning">
     🔄 Silakan ubah orientasi layar ke mode <strong>landscape</strong> untuk memulai ujian.
   </div>
 
-  <!-- UJIAN -->
+  <!-- EXAM -->
   <div id="examContainer">
     <div class="pdf-viewer">
       <iframe src="https://drive.google.com/file/d/1LVRvQf8FqltAgzNzzVY-mGOZG0efzsC0/preview" allow="autoplay"></iframe>
@@ -111,132 +153,142 @@
         <p><strong>Nama:</strong> <span id="userName"></span><br>
         <strong>Kelas:</strong> <span id="userClass"></span></p>
 
-        <form id="examForm">
-  <!-- Soal 1 -->
-  <div class="question-row">
-    <span>1.</span>
-    <div class="options">
-      <label><input type="radio" name="soal1" value="A"> A</label>
-      <label><input type="radio" name="soal1" value="B"> B</label>
-      <label><input type="radio" name="soal1" value="C"> C</label>
-      <label><input type="radio" name="soal1" value="D"> D</label>
-    </div>
-  </div>
+       <form id="examForm">
+        <!-- Soal 1 -->
+        <div class="question-row">
+          <span>1.</span>
+          <div class="options">
+            <label><input type="radio" name="soal1" value="A"> A</label>
+            <label><input type="radio" name="soal1" value="B"> B</label>
+            <label><input type="radio" name="soal1" value="C"> C</label>
+            <label><input type="radio" name="soal1" value="D"> D</label>
+          </div>
+        </div>
 
-  <!-- Soal 2 -->
-  <div class="question-row">
-    <span>2.</span>
-    <div class="options">
-      <label><input type="radio" name="soal2" value="A"> A</label>
-      <label><input type="radio" name="soal2" value="B"> B</label>
-      <label><input type="radio" name="soal2" value="C"> C</label>
-      <label><input type="radio" name="soal2" value="D"> D</label>
-    </div>
-  </div>
+        <!-- Soal 2 -->
+        <div class="question-row">
+          <span>2.</span>
+          <div class="options">
+            <label><input type="radio" name="soal2" value="A"> A</label>
+            <label><input type="radio" name="soal2" value="B"> B</label>
+            <label><input type="radio" name="soal2" value="C"> C</label>
+            <label><input type="radio" name="soal2" value="D"> D</label>
+          </div>
+        </div>
 
-  <!-- Soal 3 -->
-  <div class="question-row">
-    <span>3.</span>
-    <div class="options">
-      <label><input type="radio" name="soal3" value="A"> A</label>
-      <label><input type="radio" name="soal3" value="B"> B</label>
-      <label><input type="radio" name="soal3" value="C"> C</label>
-      <label><input type="radio" name="soal3" value="D"> D</label>
-    </div>
-  </div>
+        <!-- Soal 3 -->
+        <div class="question-row">
+          <span>3.</span>
+          <div class="options">
+            <label><input type="radio" name="soal3" value="A"> A</label>
+            <label><input type="radio" name="soal3" value="B"> B</label>
+            <label><input type="radio" name="soal3" value="C"> C</label>
+            <label><input type="radio" name="soal3" value="D"> D</label>
+          </div>
+        </div>
 
-  <!-- Soal 4 -->
-  <div class="question-row">
-    <span>4.</span>
-    <div class="options">
-      <label><input type="radio" name="soal4" value="A"> A</label>
-      <label><input type="radio" name="soal4" value="B"> B</label>
-      <label><input type="radio" name="soal4" value="C"> C</label>
-      <label><input type="radio" name="soal4" value="D"> D</label>
-    </div>
-  </div>
+        <!-- Soal 4 -->
+        <div class="question-row">
+          <span>4.</span>
+          <div class="options">
+            <label><input type="radio" name="soal4" value="A"> A</label>
+            <label><input type="radio" name="soal4" value="B"> B</label>
+            <label><input type="radio" name="soal4" value="C"> C</label>
+            <label><input type="radio" name="soal4" value="D"> D</label>
+          </div>
+        </div>
 
-  <!-- Soal 5 -->
-  <div class="question-row">
-    <span>5.</span>
-    <div class="options">
-      <label><input type="radio" name="soal5" value="A"> A</label>
-      <label><input type="radio" name="soal5" value="B"> B</label>
-      <label><input type="radio" name="soal5" value="C"> C</label>
-      <label><input type="radio" name="soal5" value="D"> D</label>
-    </div>
-  </div>
+        <!-- Soal 5 -->
+        <div class="question-row">
+          <span>5.</span>
+          <div class="options">
+            <label><input type="radio" name="soal5" value="A"> A</label>
+            <label><input type="radio" name="soal5" value="B"> B</label>
+            <label><input type="radio" name="soal5" value="C"> C</label>
+            <label><input type="radio" name="soal5" value="D"> D</label>
+          </div>
+        </div>
 
-  <!-- Soal 6 -->
-  <div class="question-row">
-    <span>6.</span>
-    <div class="options">
-      <label><input type="radio" name="soal6" value="A"> A</label>
-      <label><input type="radio" name="soal6" value="B"> B</label>
-      <label><input type="radio" name="soal6" value="C"> C</label>
-      <label><input type="radio" name="soal6" value="D"> D</label>
-    </div>
-  </div>
+        <!-- Soal 6 -->
+        <div class="question-row">
+          <span>6.</span>
+          <div class="options">
+            <label><input type="radio" name="soal6" value="A"> A</label>
+            <label><input type="radio" name="soal6" value="B"> B</label>
+            <label><input type="radio" name="soal6" value="C"> C</label>
+            <label><input type="radio" name="soal6" value="D"> D</label>
+          </div>
+        </div>
 
-  <!-- Soal 7 -->
-  <div class="question-row">
-    <span>7.</span>
-    <div class="options">
-      <label><input type="radio" name="soal7" value="A"> A</label>
-      <label><input type="radio" name="soal7" value="B"> B</label>
-      <label><input type="radio" name="soal7" value="C"> C</label>
-      <label><input type="radio" name="soal7" value="D"> D</label>
-    </div>
-  </div>
+        <!-- Soal 7 -->
+        <div class="question-row">
+          <span>7.</span>
+          <div class="options">
+            <label><input type="radio" name="soal7" value="A"> A</label>
+            <label><input type="radio" name="soal7" value="B"> B</label>
+            <label><input type="radio" name="soal7" value="C"> C</label>
+            <label><input type="radio" name="soal7" value="D"> D</label>
+          </div>
+        </div>
 
-  <!-- Soal 8 -->
-  <div class="question-row">
-    <span>8.</span>
-    <div class="options">
-      <label><input type="radio" name="soal8" value="A"> A</label>
-      <label><input type="radio" name="soal8" value="B"> B</label>
-      <label><input type="radio" name="soal8" value="C"> C</label>
-      <label><input type="radio" name="soal8" value="D"> D</label>
-    </div>
-  </div>
+        <!-- Soal 8 -->
+        <div class="question-row">
+          <span>8.</span>
+          <div class="options">
+            <label><input type="radio" name="soal8" value="A"> A</label>
+            <label><input type="radio" name="soal8" value="B"> B</label>
+            <label><input type="radio" name="soal8" value="C"> C</label>
+            <label><input type="radio" name="soal8" value="D"> D</label>
+          </div>
+        </div>
 
-  <!-- Soal 9 -->
-  <div class="question-row">
-    <span>9.</span>
-    <div class="options">
-      <label><input type="radio" name="soal9" value="A"> A</label>
-      <label><input type="radio" name="soal9" value="B"> B</label>
-      <label><input type="radio" name="soal9" value="C"> C</label>
-      <label><input type="radio" name="soal9" value="D"> D</label>
-    </div>
-  </div>
+        <!-- Soal 9 -->
+        <div class="question-row">
+          <span>9.</span>
+          <div class="options">
+            <label><input type="radio" name="soal9" value="A"> A</label>
+            <label><input type="radio" name="soal9" value="B"> B</label>
+            <label><input type="radio" name="soal9" value="C"> C</label>
+            <label><input type="radio" name="soal9" value="D"> D</label>
+          </div>
+        </div>
 
-  <!-- Soal 10 -->
-  <div class="question-row">
-    <span>10.</span>
-    <div class="options">
-      <label><input type="radio" name="soal10" value="A"> A</label>
-      <label><input type="radio" name="soal10" value="B"> B</label>
-      <label><input type="radio" name="soal10" value="C"> C</label>
-      <label><input type="radio" name="soal10" value="D"> D</label>
-    </div>
-  </div>
-</form>
-
+        <!-- Soal 10 -->
+        <div class="question-row">
+          <span>10.</span>
+          <div class="options">
+            <label><input type="radio" name="soal10" value="A"> A</label>
+            <label><input type="radio" name="soal10" value="B"> B</label>
+            <label><input type="radio" name="soal10" value="C"> C</label>
+            <label><input type="radio" name="soal10" value="D"> D</label>
+          </div>
+        </div>
+      </form>
       </div>
-
       <button id="submitBtn" class="btn btn-primary w-100 submit-btn">
         <i class="fa-solid fa-paper-plane"></i> Kirim Jawaban
       </button>
     </div>
   </div>
 
-  
- <script>
-  const loginForm = document.getElementById("loginForm");
+<script>
+  const welcomeScreen = document.getElementById("welcomeScreen");
+  const startBtn = document.getElementById("startBtn");
   const loginScreen = document.getElementById("loginScreen");
+  const loginForm = document.getElementById("loginForm");
   const examContainer = document.getElementById("examContainer");
   const landscapeWarning = document.getElementById("landscapeWarning");
+
+  // START TEST BUTTON
+  startBtn.addEventListener("click", async () => {
+    try {
+      await document.documentElement.requestFullscreen();
+      welcomeScreen.style.display = "none";
+      loginScreen.style.display = "flex";
+    } catch (err) {
+      alert("⚠️ Tidak dapat masuk fullscreen. Aktifkan manual.");
+    }
+  });
 
   // LOGIN
   loginForm.addEventListener("submit", async (e) => {
@@ -249,17 +301,11 @@
       document.getElementById("userClass").textContent = kelas;
       loginScreen.style.display = "none";
       examContainer.style.display = "flex";
-
-      try {
-        await document.documentElement.requestFullscreen();
-      } catch (err) {
-        alert("⚠️ Gagal masuk fullscreen, aktifkan manual.");
-      }
       checkOrientation();
     }
   });
 
-  // CEK ORIENTASI
+  // ORIENTATION CHECK
   function checkOrientation() {
     if (window.innerHeight > window.innerWidth) {
       landscapeWarning.style.display = "flex";
@@ -272,7 +318,7 @@
   window.addEventListener("orientationchange", checkOrientation);
   window.addEventListener("resize", checkOrientation);
 
-  // KIRIM JAWABAN
+  // SUBMIT ANSWERS
   document.getElementById("submitBtn").addEventListener("click", () => {
     const form = document.getElementById("examForm");
     const data = new FormData(form);
@@ -283,17 +329,16 @@
     alert("✅ Jawaban terkirim!\n\n" + hasil);
   });
 
-  // 🔹 KEMBALI KE LOGIN SAAT KELUAR DARI FULLSCREEN
-  document.addEventListener("fullscreenchange", () => {
-    if (!document.fullscreenElement) {
-      // keluar dari fullscreen
-      examContainer.style.display = "none";
-      loginScreen.style.display = "flex";
-      document.getElementById("nama").value = "";
-      document.getElementById("kelas").value = "";
-      alert("🚪 Anda keluar dari fullscreen. Kembali ke login.");
-    }
-  });
+  // KEMBALI KE WELCOME SAAT KELUAR FULLSCREEN (tanpa alert)
+ document.addEventListener("fullscreenchange", () => {
+  if (!document.fullscreenElement) {
+    examContainer.style.display = "none";
+    loginScreen.style.display = "none";
+    welcomeScreen.style.display = "flex";
+    document.getElementById("nama").value = "";
+    document.getElementById("kelas").value = "";
+  }
+});
 </script>
 
 </body>
