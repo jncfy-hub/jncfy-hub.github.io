@@ -2,7 +2,7 @@
 <html lang="id">
 <head>
   <meta charset="UTF-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=no">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=yes, maximum-scale=5.0">
   <title>Ujian Online - JNC Edukasi</title>
   <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/css/bootstrap.min.css" rel="stylesheet">
   <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css" rel="stylesheet">
@@ -76,8 +76,12 @@
       border-right:3px solid #e9ecef;
     }
     .pdf-viewer iframe {
-      width:100%; height:100%; border:none;
-    }
+        width: 100%;
+        height: 100%;
+        border: none;
+        touch-action: pan-x pan-y pinch-zoom; /* izinkan gerakan pinch */
+      }
+
     .answer-section {
       width:33%; background:#fff; padding:1.5rem;
       display:flex; flex-direction:column;
@@ -142,33 +146,18 @@
   </div>
 
   <!-- EXAM -->
-<div id="examContainer">
-  <div class="pdf-viewer d-flex flex-column">
-    <div id="pdfContainer" style="flex:1; overflow:hidden; display:flex; justify-content:center; align-items:center; background:#f0f0f0;">
-      <iframe id="pdfFrame" 
-        src="https://drive.google.com/file/d/1LVRvQf8FqltAgzNzzVY-mGOZG0efzsC0/preview" 
-        allow="autoplay"
-        style="width:90%; height:90%; border:none; pointer-events:none; transform:scale(1); transform-origin:center center; transition:transform 0.3s ease;">
-      </iframe>
+  <div id="examContainer">
+    <div class="pdf-viewer">
+      <iframe src="https://drive.google.com/file/d/1LVRvQf8FqltAgzNzzVY-mGOZG0efzsC0/preview" allow="autoplay"></iframe>
     </div>
 
-    <div class="text-center py-2 bg-white border-top">
-      <button id="zoomOutBtn" class="btn btn-outline-secondary me-2">
-        <i class="fa-solid fa-magnifying-glass-minus"></i> Zoom Out
-      </button>
-      <button id="zoomInBtn" class="btn btn-outline-primary">
-        <i class="fa-solid fa-magnifying-glass-plus"></i> Zoom In
-      </button>
-    </div>
-  </div>
+    <div class="answer-section">
+      <div>
+        <h4><i class="fa-solid fa-pen"></i> Lembar Jawaban</h4>
+        <p><strong>Nama:</strong> <span id="userName"></span><br>
+        <strong>Kelas:</strong> <span id="userClass"></span></p>
 
-  <div class="answer-section">
-    <div>
-      <h4><i class="fa-solid fa-pen"></i> Lembar Jawaban</h4>
-      <p><strong>Nama:</strong> <span id="userName"></span><br>
-      <strong>Kelas:</strong> <span id="userClass"></span></p>
-
-      <form id="examForm">
+        <form id="examForm">
         <!-- Soal 1 -->
         <div class="question-row">
           <span>1.</span>
@@ -279,13 +268,13 @@
           </div>
         </div>
       </form>
-    </div>
-    <button id="submitBtn" class="btn btn-primary w-100 submit-btn">
-      <i class="fa-solid fa-paper-plane"></i> Kirim Jawaban
-    </button>
-  </div>
-</div>
+      </div>
 
+      <button id="submitBtn" class="btn btn-primary w-100 submit-btn">
+        <i class="fa-solid fa-paper-plane"></i> Kirim Jawaban
+      </button>
+    </div>
+  </div>
 
 <script>
   const welcomeScreen = document.getElementById("welcomeScreen");
@@ -355,30 +344,7 @@
     document.getElementById("kelas").value = "";
   }
 });
-
-  // ======== ZOOM FUNCTION ========
-  const pdfFrame = document.getElementById("pdfFrame");
-  const zoomInBtn = document.getElementById("zoomInBtn");
-  const zoomOutBtn = document.getElementById("zoomOutBtn");
-
-  let zoomLevel = 1;
-  const zoomStep = 0.1;
-  const maxZoom = 2;
-  const minZoom = 0.7;
-
-  zoomInBtn.addEventListener("click", () => {
-    if (zoomLevel < maxZoom) {
-      zoomLevel += zoomStep;
-      pdfFrame.style.transform = `scale(${zoomLevel})`;
-    }
-  });
-
-  zoomOutBtn.addEventListener("click", () => {
-    if (zoomLevel > minZoom) {
-      zoomLevel -= zoomStep;
-      pdfFrame.style.transform = `scale(${zoomLevel})`;
-    }
-  });
 </script>
+
 </body>
 </html>
