@@ -231,56 +231,70 @@
     </div>
   </div>
 
-  <script>
-    const loginForm = document.getElementById("loginForm");
-    const loginScreen = document.getElementById("loginScreen");
-    const examContainer = document.getElementById("examContainer");
-    const landscapeWarning = document.getElementById("landscapeWarning");
+  
+ <script>
+  const loginForm = document.getElementById("loginForm");
+  const loginScreen = document.getElementById("loginScreen");
+  const examContainer = document.getElementById("examContainer");
+  const landscapeWarning = document.getElementById("landscapeWarning");
 
-    // LOGIN
-    loginForm.addEventListener("submit", async (e) => {
-      e.preventDefault();
-      const nama = document.getElementById("nama").value.trim();
-      const kelas = document.getElementById("kelas").value.trim();
+  // LOGIN
+  loginForm.addEventListener("submit", async (e) => {
+    e.preventDefault();
+    const nama = document.getElementById("nama").value.trim();
+    const kelas = document.getElementById("kelas").value.trim();
 
-      if (nama && kelas) {
-        document.getElementById("userName").textContent = nama;
-        document.getElementById("userClass").textContent = kelas;
-        loginScreen.style.display = "none";
-        examContainer.style.display = "flex";
+    if (nama && kelas) {
+      document.getElementById("userName").textContent = nama;
+      document.getElementById("userClass").textContent = kelas;
+      loginScreen.style.display = "none";
+      examContainer.style.display = "flex";
 
-        try {
-          await document.documentElement.requestFullscreen();
-        } catch (err) {
-          alert("⚠️ Gagal masuk fullscreen, aktifkan manual.");
-        }
-        checkOrientation();
+      try {
+        await document.documentElement.requestFullscreen();
+      } catch (err) {
+        alert("⚠️ Gagal masuk fullscreen, aktifkan manual.");
       }
-    });
-
-    // CEK ORIENTASI
-    function checkOrientation() {
-      if (window.innerHeight > window.innerWidth) {
-        landscapeWarning.style.display = "flex";
-        examContainer.style.display = "none";
-      } else {
-        landscapeWarning.style.display = "none";
-        examContainer.style.display = "flex";
-      }
+      checkOrientation();
     }
-    window.addEventListener("orientationchange", checkOrientation);
-    window.addEventListener("resize", checkOrientation);
+  });
 
-    // KIRIM JAWABAN
-    document.getElementById("submitBtn").addEventListener("click", () => {
-      const form = document.getElementById("examForm");
-      const data = new FormData(form);
-      let hasil = "";
-      for (let [key, value] of data.entries()) {
-        hasil += `${key}: ${value}\n`;
-      }
-      alert("✅ Jawaban terkirim!\n\n" + hasil);
-    });
-  </script>
+  // CEK ORIENTASI
+  function checkOrientation() {
+    if (window.innerHeight > window.innerWidth) {
+      landscapeWarning.style.display = "flex";
+      examContainer.style.display = "none";
+    } else {
+      landscapeWarning.style.display = "none";
+      examContainer.style.display = "flex";
+    }
+  }
+  window.addEventListener("orientationchange", checkOrientation);
+  window.addEventListener("resize", checkOrientation);
+
+  // KIRIM JAWABAN
+  document.getElementById("submitBtn").addEventListener("click", () => {
+    const form = document.getElementById("examForm");
+    const data = new FormData(form);
+    let hasil = "";
+    for (let [key, value] of data.entries()) {
+      hasil += `${key}: ${value}\n`;
+    }
+    alert("✅ Jawaban terkirim!\n\n" + hasil);
+  });
+
+  // 🔹 KEMBALI KE LOGIN SAAT KELUAR DARI FULLSCREEN
+  document.addEventListener("fullscreenchange", () => {
+    if (!document.fullscreenElement) {
+      // keluar dari fullscreen
+      examContainer.style.display = "none";
+      loginScreen.style.display = "flex";
+      document.getElementById("nama").value = "";
+      document.getElementById("kelas").value = "";
+      alert("🚪 Anda keluar dari fullscreen. Kembali ke login.");
+    }
+  });
+</script>
+
 </body>
 </html>
