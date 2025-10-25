@@ -12,9 +12,7 @@
       width: 100%; height: 100%;
       background-color: #f8f9fa;
       font-family: 'Poppins', sans-serif;
-      overflow: hidden;
     }
-
     /* LOGIN SCREEN */
     #loginScreen {
       position: fixed; inset: 0;
@@ -23,7 +21,6 @@
       justify-content: center; align-items: center;
       color: white; text-align: center; z-index: 10;
     }
-
     #loginBox {
       background: rgba(255,255,255,0.15);
       padding: 2rem; border-radius: 20px;
@@ -31,7 +28,6 @@
       width: 90%; max-width: 400px;
       box-shadow: 0 4px 20px rgba(0,0,0,0.2);
     }
-
     #loginBox h3 {margin-bottom:1rem; font-weight:600;}
     #loginBox input {margin-bottom:1rem;}
 
@@ -40,52 +36,50 @@
       display:none; flex-direction:row;
       width:100vw; height:100vh; overflow:hidden;
       background:#f8f9fa;
-      transition: transform 0.6s ease;
     }
-
-    /* Simulasi landscape di HP */
-    .landscape-mode {
-      transform: rotate(-90deg);
-      transform-origin: left top;
-      width: 100vh;
-      height: 100vw;
-      position: absolute;
-      top: 100%;
-      left: 0;
-    }
-
     .pdf-viewer {
       flex:1; background:#fff;
       border-right:3px solid #e9ecef;
     }
-
-    .pdf-viewer iframe {width:100%; height:100%; border:none;}
-
+    .pdf-viewer iframe {
+      width:100%; height:100%; border:none;
+    }
     .answer-section {
       width:35%; background:#fff; padding:1.5rem;
       display:flex; flex-direction:column;
       justify-content:space-between; overflow-y:auto;
     }
-
     .answer-section h4 {
       text-align:center; margin-bottom:1rem; font-weight:600;
     }
-
-    /* LJK STYLE */
+    /* LJK style */
     .question-row {
       display:flex; align-items:center;
       gap:1.5rem; margin-bottom:0.8rem;
       font-size:1rem;
     }
-
     .options {display:flex; gap:1.2rem;}
     .options label {cursor:pointer; display:flex; align-items:center; gap:0.3rem;}
     input[type="radio"] {transform:scale(1.2);}
     .submit-btn {margin-top:1rem; font-weight:600;}
+
+    /* Peringatan Landscape */
+    #landscapeWarning {
+      display:none; position:fixed; inset:0;
+      background:rgba(0,0,0,0.85); color:white;
+      justify-content:center; align-items:center;
+      text-align:center; font-size:1.2rem;
+      padding:20px; z-index:9999;
+    }
+    @media (max-width:768px) {
+      @media screen and (orientation:portrait) {
+        #examContainer {display:none !important;}
+        #landscapeWarning {display:flex !important;}
+      }
+    }
   </style>
 </head>
 <body>
-
   <!-- LOGIN -->
   <div id="loginScreen">
     <div id="loginBox">
@@ -98,6 +92,11 @@
         </button>
       </form>
     </div>
+  </div>
+
+  <!-- Peringatan Landscape -->
+  <div id="landscapeWarning">
+    🔄 Silakan ubah orientasi layar ke mode <strong>landscape</strong> untuk memulai ujian.
   </div>
 
   <!-- UJIAN -->
@@ -155,6 +154,7 @@
     const loginForm = document.getElementById("loginForm");
     const loginScreen = document.getElementById("loginScreen");
     const examContainer = document.getElementById("examContainer");
+    const landscapeWarning = document.getElementById("landscapeWarning");
 
     // LOGIN
     loginForm.addEventListener("submit", async (e) => {
@@ -165,23 +165,30 @@
       if (nama && kelas) {
         document.getElementById("userName").textContent = nama;
         document.getElementById("userClass").textContent = kelas;
-
         loginScreen.style.display = "none";
         examContainer.style.display = "flex";
 
-        // Masuk fullscreen
         try {
           await document.documentElement.requestFullscreen();
         } catch (err) {
-          alert("⚠️ Gagal masuk fullscreen otomatis, aktifkan manual.");
+          alert("⚠️ Gagal masuk fullscreen, aktifkan manual.");
         }
-
-        // Aktifkan mode landscape simulasi
-        if (window.innerWidth < 768) {
-          examContainer.classList.add("landscape-mode");
-        }
+        checkOrientation();
       }
     });
+
+    // CEK ORIENTASI
+    function checkOrientation() {
+      if (window.innerHeight > window.innerWidth) {
+        landscapeWarning.style.display = "flex";
+        examContainer.style.display = "none";
+      } else {
+        landscapeWarning.style.display = "none";
+        examContainer.style.display = "flex";
+      }
+    }
+    window.addEventListener("orientationchange", checkOrientation);
+    window.addEventListener("resize", checkOrientation);
 
     // KIRIM JAWABAN
     document.getElementById("submitBtn").addEventListener("click", () => {
