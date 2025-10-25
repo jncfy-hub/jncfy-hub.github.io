@@ -13,6 +13,7 @@
       background-color: #f8f9fa;
       font-family: 'Poppins', sans-serif;
     }
+
     /* LOGIN SCREEN */
     #loginScreen {
       position: fixed; inset: 0;
@@ -41,18 +42,17 @@
       flex:1; background:#fff;
       border-right:3px solid #e9ecef;
     }
-    .pdf-viewer iframe {
-      width:100%; height:100%; border:none;
-    }
+    .pdf-viewer iframe {width:100%; height:100%; border:none;}
     .answer-section {
-      width:40%; background:#fff; padding:1.5rem;
+      width:35%; background:#fff; padding:1.5rem;
       display:flex; flex-direction:column;
       justify-content:space-between; overflow-y:auto;
     }
     .answer-section h4 {
       text-align:center; margin-bottom:1rem; font-weight:600;
     }
-    /* LJK style */
+
+    /* LJK STYLE */
     .question-row {
       display:flex; align-items:center;
       gap:1.5rem; margin-bottom:0.8rem;
@@ -71,15 +71,10 @@
       text-align:center; font-size:1.2rem;
       padding:20px; z-index:9999;
     }
-    @media (max-width:768px) {
-      @media screen and (orientation:portrait) {
-        #examContainer {display:none !important;}
-        #landscapeWarning {display:flex !important;}
-      }
-    }
   </style>
 </head>
 <body>
+
   <!-- LOGIN -->
   <div id="loginScreen">
     <div id="loginBox">
@@ -92,11 +87,6 @@
         </button>
       </form>
     </div>
-  </div>
-
-  <!-- Peringatan Landscape -->
-  <div id="landscapeWarning">
-    🔄 Silakan ubah orientasi layar ke mode <strong>landscape</strong> untuk memulai ujian.
   </div>
 
   <!-- UJIAN -->
@@ -150,6 +140,11 @@
     </div>
   </div>
 
+  <!-- PERINGATAN LANDSCAPE (DISALAHKAN DIAWAL) -->
+  <div id="landscapeWarning">
+    🔄 Silakan ubah orientasi layar ke mode <strong>landscape</strong> untuk melanjutkan ujian.
+  </div>
+
   <script>
     const loginForm = document.getElementById("loginForm");
     const loginScreen = document.getElementById("loginScreen");
@@ -168,25 +163,31 @@
         loginScreen.style.display = "none";
         examContainer.style.display = "flex";
 
+        // Masuk fullscreen
         try {
           await document.documentElement.requestFullscreen();
         } catch (err) {
           alert("⚠️ Gagal masuk fullscreen, aktifkan manual.");
         }
+
+        // Periksa orientasi hanya setelah login sukses
         checkOrientation();
       }
     });
 
     // CEK ORIENTASI
     function checkOrientation() {
-      if (window.innerHeight > window.innerWidth) {
-        landscapeWarning.style.display = "flex";
-        examContainer.style.display = "none";
-      } else {
-        landscapeWarning.style.display = "none";
-        examContainer.style.display = "flex";
+      if (examContainer.style.display === "flex") {
+        if (window.innerHeight > window.innerWidth) {
+          landscapeWarning.style.display = "flex";
+          examContainer.style.display = "none";
+        } else {
+          landscapeWarning.style.display = "none";
+          examContainer.style.display = "flex";
+        }
       }
     }
+
     window.addEventListener("orientationchange", checkOrientation);
     window.addEventListener("resize", checkOrientation);
 
