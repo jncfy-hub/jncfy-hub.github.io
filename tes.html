@@ -1,0 +1,153 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Ujian Online - JNC Edukasi</title>
+  <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/css/bootstrap.min.css" rel="stylesheet">
+  <style>
+    body {
+      background-color: #f8f9fa;
+    }
+
+    .exam-container {
+      display: flex;
+      justify-content: space-between;
+      align-items: stretch;
+      gap: 1rem;
+      padding: 1rem;
+      height: 100vh;
+      box-sizing: border-box;
+    }
+
+    .pdf-viewer {
+      flex: 1;
+      background: white;
+      border-radius: 10px;
+      box-shadow: 0 2px 8px rgba(0,0,0,0.1);
+      overflow: hidden;
+    }
+
+    .pdf-viewer iframe {
+      width: 100%;
+      height: 100%;
+      border: none;
+    }
+
+    .answer-section {
+      width: 35%;
+      background: white;
+      border-radius: 10px;
+      padding: 20px;
+      box-shadow: 0 2px 8px rgba(0,0,0,0.1);
+      overflow-y: auto;
+    }
+
+    .answer-section h4 {
+      text-align: center;
+      margin-bottom: 20px;
+    }
+
+    @media (max-width: 768px) {
+      body {
+        transform: rotate(90deg);
+        transform-origin: left top;
+        width: 100vh;
+        overflow-x: hidden;
+        position: absolute;
+        top: 100%;
+        left: 0;
+      }
+      .exam-container {
+        flex-direction: row;
+      }
+      .pdf-viewer {
+        flex: 1;
+      }
+      .answer-section {
+        width: 45%;
+      }
+    }
+
+    .submit-btn {
+      margin-top: 20px;
+    }
+  </style>
+</head>
+<body>
+  <div class="exam-container">
+    <!-- Bagian Kiri: PDF Soal -->
+    <div class="pdf-viewer">
+      <iframe 
+        src="https://drive.google.com/file/d/1LVRvQf8FqltAgzNzzVY-mGOZG0efzsC0/preview" 
+        allow="autoplay">
+      </iframe>
+    </div>
+
+    <!-- Bagian Kanan: Pilihan Jawaban -->
+    <div class="answer-section">
+      <h4><i class="fa-solid fa-pen"></i> Jawaban Ujian</h4>
+      <form id="examForm">
+        <div class="mb-3">
+          <label class="form-label">Soal 1</label><br>
+          <div class="form-check">
+            <input class="form-check-input" type="radio" name="soal1" value="A">
+            <label class="form-check-label">A. Pilihan A</label>
+          </div>
+          <div class="form-check">
+            <input class="form-check-input" type="radio" name="soal1" value="B">
+            <label class="form-check-label">B. Pilihan B</label>
+          </div>
+          <div class="form-check">
+            <input class="form-check-input" type="radio" name="soal1" value="C">
+            <label class="form-check-label">C. Pilihan C</label>
+          </div>
+          <div class="form-check">
+            <input class="form-check-input" type="radio" name="soal1" value="D">
+            <label class="form-check-label">D. Pilihan D</label>
+          </div>
+        </div>
+
+        <div class="mb-3">
+          <label class="form-label">Soal 2</label><br>
+          <div class="form-check">
+            <input class="form-check-input" type="radio" name="soal2" value="A">
+            <label class="form-check-label">A. Pilihan A</label>
+          </div>
+          <div class="form-check">
+            <input class="form-check-input" type="radio" name="soal2" value="B">
+            <label class="form-check-label">B. Pilihan B</label>
+          </div>
+          <div class="form-check">
+            <input class="form-check-input" type="radio" name="soal2" value="C">
+            <label class="form-check-label">C. Pilihan C</label>
+          </div>
+          <div class="form-check">
+            <input class="form-check-input" type="radio" name="soal2" value="D">
+            <label class="form-check-label">D. Pilihan D</label>
+          </div>
+        </div>
+
+        <button type="submit" class="btn btn-primary w-100 submit-btn">
+          <i class="fa-solid fa-paper-plane"></i> Kirim Jawaban
+        </button>
+      </form>
+    </div>
+  </div>
+
+  <script src="https://kit.fontawesome.com/a2d9d5a64f.js" crossorigin="anonymous"></script>
+  <script>
+    const form = document.getElementById("examForm");
+
+    form.addEventListener("submit", function(e) {
+      e.preventDefault();
+      const data = new FormData(form);
+      let hasil = "";
+      for (let [key, value] of data.entries()) {
+        hasil += `${key}: ${value}\n`;
+      }
+      alert("Jawaban terkirim!\n\n" + hasil);
+    });
+  </script>
+</body>
+</html>
