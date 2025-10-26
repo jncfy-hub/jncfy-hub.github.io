@@ -328,8 +328,39 @@
   const loginForm = document.getElementById("loginForm");
   const examContainer = document.getElementById("examContainer");
   const landscapeWarning = document.getElementById("landscapeWarning");
+  let wakeLock = null;
 
-  // START TEST BUTTON
+  // Fungsi untuk mengaktifkan Wake Lock
+  async function enableWakeLock() {
+    try {
+      if ('wakeLock' in navigator) {
+        wakeLock = await navigator.wakeLock.request('screen');
+        console.log("✅ Wake Lock aktif: layar tidak akan mati.");
+        // Jika pengguna berpindah tab, aktifkan ulang
+        document.addEventListener('visibilitychange', async () => {
+          if (wakeLock !== null && document.visibilityState === 'visible') {
+            wakeLock = await navigator.wakeLock.request('screen');
+            console.log("🔄 Wake Lock diaktifkan ulang setelah kembali ke tab.");
+          }
+        });
+      } else {
+        console.warn("Browser tidak mendukung Wake Lock API.");
+      }
+    } catch (err) {
+      console.error("⚠Gagal mengaktifkan Wake Lock:", err);
+    }
+  }
+
+  // Fungsi untuk mematikan Wake Lock
+  function disableWakeLock() {
+    if (wakeLock !== null) {
+      wakeLock.release();
+      wakeLock = null;
+      console.log("🛑 Wake Lock dimatikan.");
+    }
+  }
+
+  // ===== START TEST BUTTON =====
   startBtn.addEventListener("click", async () => {
     try {
       await document.documentElement.requestFullscreen();
@@ -340,7 +371,7 @@
     }
   });
 
-  // LOGIN
+  // ===== LOGIN =====
   loginForm.addEventListener("submit", async (e) => {
     e.preventDefault();
     const nama = document.getElementById("nama").value.trim();
@@ -352,10 +383,13 @@
       loginScreen.style.display = "none";
       examContainer.style.display = "flex";
       checkOrientation();
+
+      // Aktifkan background saver (Wake Lock)
+      await enableWakeLock();
     }
   });
 
-  // ORIENTATION CHECK
+  // ===== ORIENTATION CHECK =====
   function checkOrientation() {
     if (window.innerHeight > window.innerWidth) {
       landscapeWarning.style.display = "flex";
@@ -368,7 +402,7 @@
   window.addEventListener("orientationchange", checkOrientation);
   window.addEventListener("resize", checkOrientation);
 
-  // SUBMIT ANSWERS
+  // ===== SUBMIT ANSWERS =====
   document.getElementById("submitBtn").addEventListener("click", () => {
     const form = document.getElementById("examForm");
     const data = new FormData(form);
@@ -379,63 +413,10 @@
     alert("✅ Jawaban terkirim!\n\n" + hasil);
   });
 
-  // KEMBALI KE WELCOME SAAT KELUAR FULLSCREEN (tanpa alert)
- document.addEventListener("fullscreenchange", () => {
-  if (!document.fullscreenElement) {
-    examContainer.style.display = "none";
-    loginScreen.style.display = "none";
-    welcomeScreen.style.display = "flex";
-    document.getElementById("nama").value = "";
-    document.getElementById("kelas").value = "";
-  }
-});
-
-
-let wakeLock = null;
-  async function enableWakeLock() {
-    try {
-      if ('wakeLock' in navigator) {
-        wakeLock = await navigator.wakeLock.request('screen');
-        console.log("✅ Wake Lock aktif: layar tidak akan mati.");
-        document.addEventListener('visibilitychange', async () => {
-          if (wakeLock !== null && document.visibilityState === 'visible') {
-            wakeLock = await navigator.wakeLock.request('screen');
-            console.log("🔄 Wake Lock diaktifkan ulang setelah kembali ke tab.");
-          }
-        });
-      } else {
-        console.warn("Browser tidak mendukung Wake Lock API.");
-      }
-    } catch (err) {
-      console.error("Gagal mengaktifkan Wake Lock:", err);
-    }
-  }
-
-  function disableWakeLock() {
-    if (wakeLock !== null) {
-      wakeLock.release();
-      wakeLock = null;
-      console.log("🛑 Wake Lock dimatikan.");
-    }
-  }
-
-  loginForm.addEventListener("submit", async (e) => {
-    e.preventDefault();
-    const nama = document.getElementById("nama").value.trim();
-    const kelas = document.getElementById("kelas").value.trim();
-    if (nama && kelas) {
-      document.getElementById("userName").textContent = nama;
-      document.getElementById("userClass").textContent = kelas;
-      loginScreen.style.display = "none";
-      examContainer.style.display = "flex";
-      checkOrientation();
-      await enableWakeLock();
-    }
-  });
-
+  // ===== FULLSCREEN CHANGE HANDLER =====
   document.addEventListener("fullscreenchange", () => {
     if (!document.fullscreenElement) {
-      disableWakeLock(); // matikan wake lock
+      disableWakeLock(); // Matikan wake lock saat keluar fullscreen
       examContainer.style.display = "none";
       loginScreen.style.display = "none";
       welcomeScreen.style.display = "flex";
