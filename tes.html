@@ -220,13 +220,11 @@
     }
   });
 
-  // tombol kirim
   document.getElementById("submitBtn").addEventListener("click", () => {
     const totalSoal = 5;
     const form = document.getElementById("examForm");
     const data = new FormData(form);
     const unanswered = [];
-
     for (let i = 1; i <= totalSoal; i++) {
       if (!data.get(`soal${i}`)) unanswered.push(i);
     }
@@ -261,7 +259,7 @@
 
         setTimeout(() => {
           form.reset();
-          document.exitFullscreen(); 
+          document.exitFullscreen();
           disableWakeLock();
 
           Swal.fire({
@@ -271,8 +269,8 @@
             confirmButtonColor: "#007bff"
           }).then(() => {
             examContainer.style.display = "none";
-            loginScreen.style.display = "flex";
-            welcomeScreen.style.display = "none";
+            loginScreen.style.display = "none";
+            welcomeScreen.style.display = "flex";
             document.getElementById("nama").value = "";
             document.getElementById("kelas").value = "";
             document.getElementById("userName").textContent = "";
