@@ -291,7 +291,7 @@
           </div>
         </div>
 
-        <div class="question-row">
+         <div class="question-row">
           <span>11.</span>
           <div class="options">
             <label><input type="radio" name="soal11" value="A"><span class="option-dot">A</span></label>
@@ -308,6 +308,36 @@
             <label><input type="radio" name="soal12" value="B"><span class="option-dot">B</span></label>
             <label><input type="radio" name="soal12" value="C"><span class="option-dot">C</span></label>
             <label><input type="radio" name="soal12" value="D"><span class="option-dot">D</span></label>
+          </div>
+        </div>
+
+        <div class="question-row">
+          <span>13.</span>
+          <div class="options">
+            <label><input type="radio" name="soal13" value="A"><span class="option-dot">A</span></label>
+            <label><input type="radio" name="soal13" value="B"><span class="option-dot">B</span></label>
+            <label><input type="radio" name="soal13" value="C"><span class="option-dot">C</span></label>
+            <label><input type="radio" name="soal13" value="D"><span class="option-dot">D</span></label>
+          </div>
+        </div>
+
+        <div class="question-row">
+          <span>14.</span>
+          <div class="options">
+            <label><input type="radio" name="soal14" value="A"><span class="option-dot">A</span></label>
+            <label><input type="radio" name="soal14" value="B"><span class="option-dot">B</span></label>
+            <label><input type="radio" name="soal14" value="C"><span class="option-dot">C</span></label>
+            <label><input type="radio" name="soal14" value="D"><span class="option-dot">D</span></label>
+          </div>
+        </div>
+
+        <div class="question-row">
+          <span>15.</span>
+          <div class="options">
+            <label><input type="radio" name="soal15" value="A"><span class="option-dot">A</span></label>
+            <label><input type="radio" name="soal15" value="B"><span class="option-dot">B</span></label>
+            <label><input type="radio" name="soal15" value="C"><span class="option-dot">C</span></label>
+            <label><input type="radio" name="soal15" value="D"><span class="option-dot">D</span></label>
           </div>
         </div>
       </form>
@@ -422,8 +452,7 @@
           localStorage.removeItem("examEndTime");
           Swal.fire({
             title: "Waktu Habis!",
-            text: "Jawaban kamu dikirim otomatis.",
-            icon: "warning",
+            text: "Jawaban dikirim otomatis.",
             confirmButtonText: "OK",
             confirmButtonColor: "#007bff"
           }).then(() => {
@@ -488,7 +517,7 @@
 
 
     document.getElementById("submitBtn").addEventListener("click", () => {
-      const totalSoal = 5;
+      const totalSoal = 15;
       const form = document.getElementById("examForm");
       const data = new FormData(form);
       const unanswered = [];
@@ -500,7 +529,7 @@
       if (unanswered.length > 0) {
         Swal.fire({
           title: "Tinjau kembali!",
-          html: `Anda belum menjawab nomor: <b>${unanswered.join(", ")}</b>`,
+          html: `Belum dijawab soal nomor: <b>${unanswered.join(", ")}</b>`,
           confirmButtonText: "OK",
           confirmButtonColor: "#007bff"
         });
