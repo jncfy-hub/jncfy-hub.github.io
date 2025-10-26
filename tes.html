@@ -8,98 +8,117 @@
   <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css" rel="stylesheet">
   <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
   <style>
-    html, body {
-      margin: 0; padding: 0;
-      width: 100%; height: 100%;
-      background-color: #f8f9fa;
-      font-family: 'Poppins', sans-serif;
-      overflow: hidden;
-    }
+  html, body {
+    margin: 0; padding: 0;
+    width: 100%; height: 100%;
+    background-color: #f8f9fa;
+    font-family: 'Poppins', sans-serif;
+    overflow: hidden;
+  }
 
-    ::-webkit-scrollbar { display: none; }
+  ::-webkit-scrollbar { display: none; }
 
-    #welcomeScreen {
-      position: fixed; inset: 0;
-      background: linear-gradient(135deg, #007bff, #00c3ff);
-      color: white;
-      display: flex; flex-direction: column;
-      justify-content: center; align-items: center;
-      text-align: center; z-index: 20;
-    }
-    #welcomeScreen img {
-      width: 120px; height: 120px;
-      margin-bottom: 1rem; border-radius: 50%;
-      background: white; padding: 10px;
-      box-shadow: 0 0 20px rgba(255,255,255,0.5);
-    }
+  #welcomeScreen {
+    position: fixed; inset: 0;
+    background: linear-gradient(135deg, #007bff, #00c3ff);
+    color: white;
+    display: flex; flex-direction: column;
+    justify-content: center; align-items: center;
+    text-align: center; z-index: 20;
+  }
 
-    #loginScreen {
-      position: fixed; inset: 0;
-      background: linear-gradient(135deg, #007bff, #00c3ff);
-      display: none; flex-direction: column;
-      justify-content: center; align-items: center;
-      color: white; text-align: center; z-index: 10;
-    }
-    #loginBox .input-group {
-      background: rgba(255, 255, 255, 0.85);
-      border-radius: 5px;
-      padding: 4px 8px;
-      box-shadow: 0 2px 8px rgba(0,0,0,0.15);
-      transition: all 0.3s ease;
-    }
+  #welcomeScreen img {
+    width: 120px; height: 120px;
+    margin-bottom: 1rem; border-radius: 50%;
+    background: white; padding: 10px;
+    box-shadow: 0 0 20px rgba(255,255,255,0.5);
+  }
 
-    #loginBox .input-group:focus-within {
-      box-shadow: 0 0 10px rgba(0, 195, 255, 0.6);
-    }
+  #loginScreen {
+    position: fixed; inset: 0;
+    background: linear-gradient(135deg, #007bff, #00c3ff);
+    display: none; flex-direction: column;
+    justify-content: center; align-items: center;
+    color: white; text-align: center; z-index: 10;
+  }
 
-    #loginBox .form-control:focus {
-      box-shadow: none;
-      border-color: transparent;
-    }
+  #loginBox .input-group {
+    background: rgba(255, 255, 255, 0.85);
+    border-radius: 5px;
+    padding: 4px 8px;
+    box-shadow: 0 2px 8px rgba(0,0,0,0.15);
+    transition: all 0.3s ease;
+  }
 
-    #examContainer {
-      display:none; flex-direction:row;
-      width:100vw; height:100vh; overflow:hidden;
-      background:#f8f9fa;
-    }
-    .pdf-viewer { flex:1; background:#fff; border-right:3px solid #e9ecef; }
-    .pdf-viewer iframe { width:100%; height:100%; border:none; }
+  #loginBox .input-group:focus-within {
+    box-shadow: 0 0 10px rgba(0, 195, 255, 0.6);
+  }
 
-    .answer-section {
-      width:29%; background:#fff; padding:1.5rem;
-      display:flex; flex-direction:column;
-      justify-content:space-between; overflow-y:auto;
-    }
-    .question-row { display:flex; align-items:center; gap:1.5rem; margin-bottom:0.8rem; font-size:1rem; }
-    .options { display:flex; gap:1rem; }
-    .options input[type="radio"] { display:none; }
+  #loginBox .form-control:focus {
+    box-shadow: none;
+    border-color: transparent;
+  }
 
-    .option-dot {
-      display:flex; align-items:center; justify-content:center;
-      width:23px; height:23px;
-      border:2px solid #007bff; border-radius:50%;
-      color:#007bff; font-weight:600; font-size:0.9rem;
-      transition:all 0.25s ease;
-    }
-    .options label:hover .option-dot { border-color:#00c3ff; color:#00c3ff; box-shadow:0 0 5px rgba(0,195,255,0.5); }
-    .options input[type="radio"]:checked + .option-dot {
-      background-color:#007bff; color:#fff; box-shadow:0 0 6px rgba(0,123,255,0.4); transform:scale(1.05);
-    }
+  #examContainer {
+    display:none; flex-direction:row;
+    width:100vw; height:100vh; overflow:hidden;
+    background:#f8f9fa;
+  }
 
-    .submit-btn { border-radius:30px; font-weight:600; transition:all 0.3s ease; }
-    .submit-btn:hover { transform:scale(1.05); box-shadow:0 4px 12px rgba(0,123,255,0.3); }
+  .pdf-viewer { flex:1; background:#fff; border-right:3px solid #e9ecef; }
+  .pdf-viewer iframe { width:100%; height:100%; border:none; }
 
-    #landscapeWarning {
-      display:none; position:fixed; inset:0;
-      background:rgba(0,0,0,0.85); color:white;
-      justify-content:center; align-items:center;
-      text-align:center; font-size:1.2rem;
-      padding:20px; z-index:9999;
-    }
-  </style>
+  .answer-section {
+    width:29%; background:#fff; padding:1.5rem;
+    display:flex; flex-direction:column;
+    justify-content:space-between; overflow-y:auto;
+  }
+
+  .question-row { display:flex; align-items:center; gap:1.5rem; margin-bottom:0.8rem; font-size:1rem; }
+  .options { display:flex; gap:1rem; }
+  .options input[type="radio"] { display:none; }
+
+  .option-dot {
+    display:flex; align-items:center; justify-content:center;
+    width:23px; height:23px;
+    border:2px solid #007bff; border-radius:50%;
+    color:#007bff; font-weight:600; font-size:0.9rem;
+    transition:all 0.25s ease;
+  }
+
+  .options label:hover .option-dot { border-color:#00c3ff; color:#00c3ff; box-shadow:0 0 5px rgba(0,195,255,0.5); }
+
+  .options input[type="radio"]:checked + .option-dot {
+    background-color:#007bff; color:#fff; box-shadow:0 0 6px rgba(0,123,255,0.4); transform:scale(1.05);
+  }
+
+  .submit-btn { border-radius:30px; font-weight:600; transition:all 0.3s ease; }
+  .submit-btn:hover { transform:scale(1.05); box-shadow:0 4px 12px rgba(0,123,255,0.3); }
+
+  /* 🔄 Overlay Peringatan Landscape */
+  #landscapeWarning {
+    display:none; position:fixed; inset:0;
+    background:rgba(0,0,0,0.85); color:white;
+    justify-content:center; align-items:center;
+    text-align:center; font-size:1.2rem;
+    padding:20px; z-index:9999; flex-direction:column;
+  }
+
+  #landscapeWarning i {
+    font-size:3.5rem;
+    color:#00c3ff;
+    margin-bottom:1rem;
+    animation: rotatePhone 2s infinite linear;
+  }
+
+  @keyframes rotatePhone {
+    0% { transform: rotate(0deg); }
+    50% { transform: rotate(90deg); }
+    100% { transform: rotate(0deg); }
+  }
+</style>
 </head>
 <body>
-
 <div id="welcomeScreen">
     <img src="https://lh3.googleusercontent.com/z758kRDT4zZpMf7_oi7p8gikCZtBEc9LLL5Uokunegi69Gi2swuS_bP8MqNi83Of8KeS9ytOCHqOUafSxQ" alt="Logo JNC">
     <h1>Welcome To Online Examination</h1>
@@ -143,8 +162,6 @@
   </div>
 </div>
 
-
-  <div id="landscapeWarning">🔄 Silakan ubah orientasi ke mode <strong>landscape</strong>.</div>
   <div id="examContainer">
     <div class="pdf-viewer">
       <iframe src="https://drive.google.com/file/d/1LVRvQf8FqltAgzNzzVY-mGOZG0efzsC0/preview" allow="autoplay"></iframe>
@@ -207,131 +224,164 @@
     </div>
   </div>
 
+  <div id="landscapeWarning">
+  <i class="fa-solid fa-rotate fa-spin"></i>
+  <p>🔄 Silakan ubah orientasi ke mode <strong>landscape</strong> untuk melanjutkan ujian.</p>
+ </div>
+
   <script>
-    const welcomeScreen = document.getElementById("welcomeScreen");
-    const startBtn = document.getElementById("startBtn");
-    const loginScreen = document.getElementById("loginScreen");
-    const loginForm = document.getElementById("loginForm");
-    const examContainer = document.getElementById("examContainer");
-    const landscapeWarning = document.getElementById("landscapeWarning");
-    let wakeLock = null;
-    async function enableWakeLock() {
+  const welcomeScreen = document.getElementById("welcomeScreen");
+  const startBtn = document.getElementById("startBtn");
+  const loginScreen = document.getElementById("loginScreen");
+  const loginForm = document.getElementById("loginForm");
+  const examContainer = document.getElementById("examContainer");
+  const landscapeWarning = document.getElementById("landscapeWarning");
+  let wakeLock = null;
+
+  async function enableWakeLock() {
+    try {
+      if ('wakeLock' in navigator) {
+        wakeLock = await navigator.wakeLock.request('screen');
+      }
+    } catch (err) {
+      console.warn("Gagal mengaktifkan wake lock:", err);
+    }
+  }
+
+  function disableWakeLock() {
+    if (wakeLock !== null) {
+      wakeLock.release();
+      wakeLock = null;
+    }
+  }
+
+  async function goFullscreen() {
+    const elem = document.documentElement;
+    if (!document.fullscreenElement) {
       try {
-        if ('wakeLock' in navigator) {
-          wakeLock = await navigator.wakeLock.request('screen');
-        }
+        if (elem.requestFullscreen) await elem.requestFullscreen();
+        else if (elem.webkitRequestFullscreen) await elem.webkitRequestFullscreen();
+        else if (elem.msRequestFullscreen) await elem.msRequestFullscreen();
       } catch (err) {
-        console.warn("Gagal mengaktifkan wake lock:", err);
+        console.warn("Fullscreen gagal:", err);
       }
     }
+  }
 
-    function disableWakeLock() {
-      if (wakeLock !== null) {
-        wakeLock.release();
-        wakeLock = null;
-      }
+  function checkOrientation() {
+    if (window.matchMedia("(orientation: portrait)").matches) {
+      landscapeWarning.style.display = "flex";
+      examContainer.style.display = "none";
+    } else {
+      landscapeWarning.style.display = "none";
+      examContainer.style.display = "flex";
     }
+  }
 
-    async function goFullscreen() {
-      const elem = document.documentElement;
-      if (!document.fullscreenElement) {
-        try {
-          if (elem.requestFullscreen) await elem.requestFullscreen();
-          else if (elem.webkitRequestFullscreen) await elem.webkitRequestFullscreen();
-          else if (elem.msRequestFullscreen) await elem.msRequestFullscreen();
-        } catch (err) {
-          console.warn("Fullscreen gagal:", err);
-        }
-      }
-    }
+  window.addEventListener("orientationchange", checkOrientation);
 
-    startBtn.addEventListener("click", async () => {
+  startBtn.addEventListener("click", async () => {
+    await goFullscreen();
+    welcomeScreen.style.display = "none";
+    loginScreen.style.display = "flex";
+  });
+
+  loginForm.addEventListener("submit", async (e) => {
+    e.preventDefault();
+    const nama = document.getElementById("nama").value.trim();
+    const kelas = document.getElementById("kelas").value.trim();
+    if (nama && kelas) {
       await goFullscreen();
-      welcomeScreen.style.display = "none";
-      loginScreen.style.display = "flex";
-    });
+      document.getElementById("userName").textContent = nama;
+      document.getElementById("userClass").textContent = kelas;
+      loginScreen.style.display = "none";
+      examContainer.style.display = "flex";
 
-    loginForm.addEventListener("submit", async (e) => {
-      e.preventDefault();
-      const nama = document.getElementById("nama").value.trim();
-      const kelas = document.getElementById("kelas").value.trim();
-      if (nama && kelas) {
-        await goFullscreen(); 
-        document.getElementById("userName").textContent = nama;
-        document.getElementById("userClass").textContent = kelas;
-        loginScreen.style.display = "none";
-        examContainer.style.display = "flex";
-        await enableWakeLock();
-      }
-    });
+      await enableWakeLock();
 
-    document.getElementById("submitBtn").addEventListener("click", () => {
-      const totalSoal = 5;
-      const form = document.getElementById("examForm");
-      const data = new FormData(form);
-      const unanswered = [];
-      for (let i = 1; i <= totalSoal; i++) {
-        if (!data.get(`soal${i}`)) unanswered.push(i);
-      }
-
-      if (unanswered.length > 0) {
-        Swal.fire({
-          title: "Belum Lengkap!",
-          html: `Kamu belum menjawab nomor: <b>${unanswered.join(", ")}</b>`,
-          confirmButtonText: "Periksa Lagi",
-          confirmButtonColor: "#007bff"
-        });
-        return;
-      }
-
-      Swal.fire({
-        title: "Yakin ingin kirim jawaban?",
-        showCancelButton: true,
-        confirmButtonText: "Ya, kirim!",
-        cancelButtonText: "Batal",
-        confirmButtonColor: "#007bff",
-        cancelButtonColor: "#dc3545"
-      }).then((result) => {
-        if (result.isConfirmed) {
-          Swal.fire({
-            title: "Sedang mengirim...",
-            text: "Harap tunggu beberapa detik.",
-            allowOutsideClick: false,
-            didOpen: () => Swal.showLoading()
-          });
-
-          setTimeout(() => {
-            form.reset();
-            document.exitFullscreen();
-            disableWakeLock();
-            Swal.fire({
-              title: "Jawaban Berhasil Dikirim!",
-              text: "Terima kasih sudah mengerjakan ujian ini.",
-              confirmButtonColor: "#007bff"
-            }).then(() => {
-              examContainer.style.display = "none";
-              loginScreen.style.display = "none";
-              welcomeScreen.style.display = "flex";
-              document.getElementById("nama").value = "";
-              document.getElementById("kelas").value = "";
-              document.getElementById("userName").textContent = "";
-              document.getElementById("userClass").textContent = "";
-            });
-          }, 2500);
+      // 🔒 Kunci orientasi ke landscape bila didukung
+      if (screen.orientation && screen.orientation.lock) {
+        try {
+          await screen.orientation.lock('landscape');
+        } catch (err) {
+          console.warn("Gagal mengunci orientasi:", err);
         }
-      });
-    });
+      }
 
-    document.addEventListener("fullscreenchange", () => {
-      if (!document.fullscreenElement) {
-        disableWakeLock();
-        examContainer.style.display = "none";
-        loginScreen.style.display = "flex";
-        welcomeScreen.style.display = "none";
-        document.getElementById("nama").value = "";
-        document.getElementById("kelas").value = "";
+      checkOrientation();
+    }
+  });
+
+  document.getElementById("submitBtn").addEventListener("click", () => {
+    const totalSoal = 5;
+    const form = document.getElementById("examForm");
+    const data = new FormData(form);
+    const unanswered = [];
+
+    for (let i = 1; i <= totalSoal; i++) {
+      if (!data.get(`soal${i}`)) unanswered.push(i);
+    }
+
+    if (unanswered.length > 0) {
+      Swal.fire({
+        title: "Belum Lengkap!",
+        html: `Kamu belum menjawab nomor: <b>${unanswered.join(", ")}</b>`,
+        confirmButtonText: "Periksa Lagi",
+        confirmButtonColor: "#007bff"
+      });
+      return;
+    }
+
+    Swal.fire({
+      title: "Yakin ingin kirim jawaban?",
+      showCancelButton: true,
+      confirmButtonText: "Ya, kirim!",
+      cancelButtonText: "Batal",
+      confirmButtonColor: "#007bff",
+      cancelButtonColor: "#dc3545"
+    }).then((result) => {
+      if (result.isConfirmed) {
+        Swal.fire({
+          title: "Sedang mengirim...",
+          text: "Harap tunggu beberapa detik.",
+          allowOutsideClick: false,
+          didOpen: () => Swal.showLoading()
+        });
+
+        setTimeout(() => {
+          form.reset();
+          document.exitFullscreen();
+          disableWakeLock();
+          Swal.fire({
+            title: "Jawaban Berhasil Dikirim!",
+            text: "Terima kasih sudah mengerjakan ujian ini.",
+            confirmButtonColor: "#007bff"
+          }).then(() => {
+            examContainer.style.display = "none";
+            loginScreen.style.display = "none";
+            welcomeScreen.style.display = "flex";
+            document.getElementById("nis").value = "";
+            document.getElementById("nama").value = "";
+            document.getElementById("kelas").value = "";
+            document.getElementById("userName").textContent = "";
+            document.getElementById("userClass").textContent = "";
+          });
+        }, 2500);
       }
     });
-  </script>
+  });
+
+  document.addEventListener("fullscreenchange", () => {
+    if (!document.fullscreenElement) {
+      disableWakeLock();
+      examContainer.style.display = "none";
+      loginScreen.style.display = "flex";
+      welcomeScreen.style.display = "none";
+      document.getElementById("nis").value = "";
+      document.getElementById("nama").value = "";
+      document.getElementById("kelas").value = "";
+    }
+  });
+</script>
 </body>
 </html>
