@@ -161,7 +161,7 @@
         <span class="input-group-text bg-white border-0">
           <i class="fa-solid fa-id-card text-primary"></i>
         </span>
-        <input type="text" id="nis" class="form-control border-0" placeholder="NIS / NISN" maxlength="10" inputmode="numeric" required>
+        <input type="text" id="nis" class="form-control border-0" placeholder="NISN" maxlength="10" inputmode="numeric" required>
       </div>
       <small id="nisError" class="text-danger d-none">Anda sudah mengikuti ujian ini.</small>
       <div class="input-group mb-2">
@@ -560,7 +560,7 @@
           submitBtn.style.opacity = "1";
           submitBtn.style.cursor = "pointer";
         } else {
-          namaInput.value = "NIS tidak ditemukan!";
+          namaInput.value = "NISN tidak ditemukan!";
           namaInput.style.color = "#dc3545";
           namaInput.style.fontStyle = "italic";
           submitBtn.disabled = true;
@@ -584,7 +584,7 @@
       Swal.fire({
         icon: "warning",
         title: "Data belum lengkap!",
-        text: "Pastikan NIS valid dan data sudah muncul.",
+        text: "Pastikan NISN valid dan data sudah muncul.",
         confirmButtonColor: "#007bff",
       });
       return;
