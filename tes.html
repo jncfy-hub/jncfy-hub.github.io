@@ -273,7 +273,6 @@
       }
     }
 
-
     async function goFullscreen() {
       const elem = document.documentElement;
       if (!document.fullscreenElement) {
@@ -286,7 +285,6 @@
         }
       }
     }
-
 
     function checkOrientation() {
       if (examContainer.style.display === "flex") {
@@ -307,19 +305,17 @@
           await screen.orientation.lock("landscape");
         }
       } catch (err) {
-        console.warn("Tidak bisa mengunci orientasi secara otomatis:", err);
+        console.warn("Tidak bisa mengunci orientasi:", err);
       }
       landscapeWarning.style.display = "none";
       examContainer.style.display = "flex";
     });
-
 
     startBtn.addEventListener("click", async () => {
       await goFullscreen();
       welcomeScreen.style.display = "none";
       loginScreen.style.display = "flex";
     });
-
 
     if (localStorage.getItem("examEndTime")) {
       const endTime = parseInt(localStorage.getItem("examEndTime"));
@@ -331,25 +327,36 @@
       clearInterval(timerInterval);
       const endTime = Math.floor(Date.now() / 1000) + duration;
       localStorage.setItem("examEndTime", endTime);
-
       timerInterval = setInterval(() => {
         const now = Math.floor(Date.now() / 1000);
         remainingTime = Math.max(0, endTime - now);
-
         const minutes = String(Math.floor(remainingTime / 60)).padStart(2, "0");
         const seconds = String(remainingTime % 60).padStart(2, "0");
         timerDisplay.textContent = `Waktu Tersisa: ${minutes}:${seconds}`;
 
         if (remainingTime <= 0) {
           clearInterval(timerInterval);
+          resetTimer(); 
+          localStorage.removeItem("examEndTime");
           Swal.fire({
             title: "Waktu Habis!",
-            text: "Jawaban kamu akan dikirim otomatis.",
+            text: "Jawaban kamu dikirim otomatis.",
             icon: "warning",
             confirmButtonText: "OK",
             confirmButtonColor: "#007bff"
           }).then(() => {
-            document.getElementById("submitBtn").click();
+            const form = document.getElementById("examForm");
+            form.reset();
+            disableWakeLock();
+            document.exitFullscreen();
+            examContainer.style.display = "none";
+            loginScreen.style.display = "none";
+            welcomeScreen.style.display = "flex";
+            document.getElementById("nis").value = "";
+            document.getElementById("nama").value = "";
+            document.getElementById("kelas").value = "";
+            document.getElementById("userName").textContent = "";
+            document.getElementById("userClass").textContent = "";
           });
         }
       }, 1000);
@@ -373,7 +380,6 @@
       localStorage.removeItem("examEndTime");
     }
 
-
     loginForm.addEventListener("submit", async (e) => {
       e.preventDefault();
       const nama = document.getElementById("nama").value.trim();
@@ -385,6 +391,7 @@
         loginScreen.style.display = "none";
         examContainer.style.display = "flex";
         await enableWakeLock();
+
         if (screen.orientation && screen.orientation.lock) {
           try {
             await screen.orientation.lock('landscape');
@@ -392,17 +399,18 @@
             console.warn("Gagal mengunci orientasi:", err);
           }
         }
-
         checkOrientation();
         resumeTimer();
       }
     });
+
 
     document.getElementById("submitBtn").addEventListener("click", () => {
       const totalSoal = 5;
       const form = document.getElementById("examForm");
       const data = new FormData(form);
       const unanswered = [];
+
       for (let i = 1; i <= totalSoal; i++) {
         if (!data.get(`soal${i}`)) unanswered.push(i);
       }
@@ -437,8 +445,7 @@
             form.reset();
             document.exitFullscreen();
             disableWakeLock();
-            resetTimer(); // 🔁 Reset waktu
-            localStorage.removeItem("savedAnswers"); // 🧹 Hapus jawaban tersimpan
+            resetTimer(); 
             Swal.fire({
               title: "Jawaban Berhasil Dikirim!",
               text: "Terima kasih sudah mengerjakan ujian ini.",
@@ -466,6 +473,7 @@
         welcomeScreen.style.display = "none";
         const form = document.getElementById("examForm");
         form.reset();
+
         document.getElementById("nis").value = "";
         document.getElementById("nama").value = "";
         document.getElementById("kelas").value = "";
