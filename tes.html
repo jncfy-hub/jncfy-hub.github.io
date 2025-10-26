@@ -60,7 +60,7 @@
     .pdf-viewer iframe { width:100%; height:100%; border:none; }
 
     .answer-section {
-      width:29%; background:#fff; padding:1.5rem;
+      width:30%; background:#fff; padding:1.5rem;
       display:flex; flex-direction:column;
       justify-content:space-between; overflow-y:auto;
     }
@@ -174,123 +174,142 @@
         </form>
       </div>
       <div class="d-flex justify-content-center mt-3">
-        <button id="submitBtn" class="btn btn-primary w-100 py-2 submit-btn"><i class="fa-solid fa-paper-plane"></i> Kirim Jawaban</button>
+      <button id="submitBtn" class="btn btn-primary w-100 py-2 submit-btn"><i class="fa-solid fa-paper-plane"></i> Kirim Jawaban</button>
       </div>
     </div>
   </div>
 
-<script>
-  const welcomeScreen = document.getElementById("welcomeScreen");
-  const startBtn = document.getElementById("startBtn");
-  const loginScreen = document.getElementById("loginScreen");
-  const loginForm = document.getElementById("loginForm");
-  const examContainer = document.getElementById("examContainer");
-  const landscapeWarning = document.getElementById("landscapeWarning");
-  let wakeLock = null;
+  <script>
+    const welcomeScreen = document.getElementById("welcomeScreen");
+    const startBtn = document.getElementById("startBtn");
+    const loginScreen = document.getElementById("loginScreen");
+    const loginForm = document.getElementById("loginForm");
+    const examContainer = document.getElementById("examContainer");
+    const landscapeWarning = document.getElementById("landscapeWarning");
+    let wakeLock = null;
 
-  async function enableWakeLock() {
-    try {
-      if ('wakeLock' in navigator) {
-        wakeLock = await navigator.wakeLock.request('screen');
+    async function enableWakeLock() {
+      try {
+        if ('wakeLock' in navigator) {
+          wakeLock = await navigator.wakeLock.request('screen');
+        }
+      } catch (err) {
+        console.warn("Gagal mengaktifkan wake lock:", err);
       }
-    } catch {}
-  }
-  function disableWakeLock() {
-    if (wakeLock !== null) {
-      wakeLock.release(); wakeLock = null;
-    }
-  }
-
-  startBtn.addEventListener("click", async () => {
-    try { await document.documentElement.requestFullscreen(); } catch {}
-    welcomeScreen.style.display = "none";
-    loginScreen.style.display = "flex";
-  });
-
-  loginForm.addEventListener("submit", async (e) => {
-    e.preventDefault();
-    const nama = document.getElementById("nama").value.trim();
-    const kelas = document.getElementById("kelas").value.trim();
-    if (nama && kelas) {
-      document.getElementById("userName").textContent = nama;
-      document.getElementById("userClass").textContent = kelas;
-      loginScreen.style.display = "none";
-      examContainer.style.display = "flex";
-      await enableWakeLock();
-    }
-  });
-
-  document.getElementById("submitBtn").addEventListener("click", () => {
-    const totalSoal = 5;
-    const form = document.getElementById("examForm");
-    const data = new FormData(form);
-    const unanswered = [];
-    for (let i = 1; i <= totalSoal; i++) {
-      if (!data.get(`soal${i}`)) unanswered.push(i);
     }
 
-    if (unanswered.length > 0) {
-      Swal.fire({
-        icon: "warning",
-        title: "Belum Lengkap!",
-        html: `Kamu belum menjawab nomor: <b>${unanswered.join(", ")}</b>`,
-        confirmButtonText: "Periksa Lagi",
-        confirmButtonColor: "#007bff"
-      });
-      return;
+    function disableWakeLock() {
+      if (wakeLock !== null) {
+        wakeLock.release();
+        wakeLock = null;
+      }
     }
 
-    Swal.fire({
-      title: "Yakin ingin kirim jawaban?",
-      icon: "question",
-      showCancelButton: true,
-      confirmButtonText: "Ya, kirim!",
-      cancelButtonText: "Batal",
-      confirmButtonColor: "#007bff",
-      cancelButtonColor: "#dc3545"
-    }).then((result) => {
-      if (result.isConfirmed) {
-        Swal.fire({
-          title: "Sedang mengirim...",
-          text: "Harap tunggu beberapa detik.",
-          allowOutsideClick: false,
-          didOpen: () => Swal.showLoading()
-        });
+    async function goFullscreen() {
+      const elem = document.documentElement;
+      if (!document.fullscreenElement) {
+        try {
+          if (elem.requestFullscreen) await elem.requestFullscreen();
+          else if (elem.webkitRequestFullscreen) await elem.webkitRequestFullscreen();
+          else if (elem.msRequestFullscreen) await elem.msRequestFullscreen();
+        } catch (err) {
+          console.warn("Fullscreen gagal:", err);
+        }
+      }
+    }
 
-        setTimeout(() => {
-          form.reset();
-          document.exitFullscreen();
-          disableWakeLock();
+    startBtn.addEventListener("click", async () => {
+      await goFullscreen();
+      welcomeScreen.style.display = "none";
+      loginScreen.style.display = "flex";
+    });
 
-          Swal.fire({
-            icon: "success",
-            title: "Jawaban Berhasil Dikirim!",
-            text: "Terima kasih sudah mengerjakan ujian ini.",
-            confirmButtonColor: "#007bff"
-          }).then(() => {
-            examContainer.style.display = "none";
-            loginScreen.style.display = "none";
-            welcomeScreen.style.display = "flex";
-            document.getElementById("nama").value = "";
-            document.getElementById("kelas").value = "";
-            document.getElementById("userName").textContent = "";
-            document.getElementById("userClass").textContent = "";
-          });
-        }, 2500);
+    loginForm.addEventListener("submit", async (e) => {
+      e.preventDefault();
+      const nama = document.getElementById("nama").value.trim();
+      const kelas = document.getElementById("kelas").value.trim();
+      if (nama && kelas) {
+        await goFullscreen(); // pastikan fullscreen aktif di sini juga
+        document.getElementById("userName").textContent = nama;
+        document.getElementById("userClass").textContent = kelas;
+        loginScreen.style.display = "none";
+        examContainer.style.display = "flex";
+        await enableWakeLock();
       }
     });
-  });
 
-  document.addEventListener("fullscreenchange", () => {
-    if (!document.fullscreenElement) {
-      disableWakeLock();
-      examContainer.style.display = "none";
-      loginScreen.style.display = "flex";
-      welcomeScreen.style.display = "none";
-      document.getElementById("nama").value = "";
-      document.getElementById("kelas").value = "";
-    }
-  });
-</script>
+    // 📨 Saat kirim jawaban
+    document.getElementById("submitBtn").addEventListener("click", () => {
+      const totalSoal = 5;
+      const form = document.getElementById("examForm");
+      const data = new FormData(form);
+      const unanswered = [];
+      for (let i = 1; i <= totalSoal; i++) {
+        if (!data.get(`soal${i}`)) unanswered.push(i);
+      }
+
+      if (unanswered.length > 0) {
+        Swal.fire({
+          icon: "warning",
+          title: "Belum Lengkap!",
+          html: `Kamu belum menjawab nomor: <b>${unanswered.join(", ")}</b>`,
+          confirmButtonText: "Periksa Lagi",
+          confirmButtonColor: "#007bff"
+        });
+        return;
+      }
+
+      Swal.fire({
+        title: "Yakin ingin kirim jawaban?",
+        icon: "question",
+        showCancelButton: true,
+        confirmButtonText: "Ya, kirim!",
+        cancelButtonText: "Batal",
+        confirmButtonColor: "#007bff",
+        cancelButtonColor: "#dc3545"
+      }).then((result) => {
+        if (result.isConfirmed) {
+          Swal.fire({
+            title: "Sedang mengirim...",
+            text: "Harap tunggu beberapa detik.",
+            allowOutsideClick: false,
+            didOpen: () => Swal.showLoading()
+          });
+
+          setTimeout(() => {
+            form.reset();
+            document.exitFullscreen();
+            disableWakeLock();
+
+            Swal.fire({
+              icon: "success",
+              title: "Jawaban Berhasil Dikirim!",
+              text: "Terima kasih sudah mengerjakan ujian ini.",
+              confirmButtonColor: "#007bff"
+            }).then(() => {
+              examContainer.style.display = "none";
+              loginScreen.style.display = "none";
+              welcomeScreen.style.display = "flex";
+              document.getElementById("nama").value = "";
+              document.getElementById("kelas").value = "";
+              document.getElementById("userName").textContent = "";
+              document.getElementById("userClass").textContent = "";
+            });
+          }, 2500);
+        }
+      });
+    });
+
+    document.addEventListener("fullscreenchange", () => {
+      if (!document.fullscreenElement) {
+        disableWakeLock();
+        examContainer.style.display = "none";
+        loginScreen.style.display = "flex";
+        welcomeScreen.style.display = "none";
+        document.getElementById("nama").value = "";
+        document.getElementById("kelas").value = "";
+      }
+    });
+  </script>
 </body>
 </html>
