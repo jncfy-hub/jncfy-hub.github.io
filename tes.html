@@ -241,6 +241,7 @@
   const landscapeWarning = document.getElementById("landscapeWarning");
   let wakeLock = null;
 
+  // 💤 Mencegah layar mati
   async function enableWakeLock() {
     try {
       if ('wakeLock' in navigator) {
@@ -258,6 +259,7 @@
     }
   }
 
+  // 🔲 Fullscreen mode
   async function goFullscreen() {
     const elem = document.documentElement;
     if (!document.fullscreenElement) {
@@ -271,18 +273,23 @@
     }
   }
 
+  // 🔄 Cek orientasi hanya setelah mulai ujian
   function checkOrientation() {
-    if (window.matchMedia("(orientation: portrait)").matches) {
-      landscapeWarning.style.display = "flex";
-      examContainer.style.display = "none";
-    } else {
-      landscapeWarning.style.display = "none";
-      examContainer.style.display = "flex";
+    if (examContainer.style.display === "flex") {
+      if (window.matchMedia("(orientation: portrait)").matches) {
+        landscapeWarning.style.display = "flex";
+        examContainer.style.display = "none";
+      } else {
+        landscapeWarning.style.display = "none";
+        examContainer.style.display = "flex";
+      }
     }
   }
 
-  checkOrientation();
+  // Pantau perubahan orientasi
   window.addEventListener("orientationchange", checkOrientation);
+
+  // Tombol "OK" di peringatan
   document.getElementById("okLandscapeBtn").addEventListener("click", async () => {
     try {
       if (screen.orientation && screen.orientation.lock) {
@@ -292,16 +299,19 @@
       console.warn("Tidak bisa mengunci orientasi secara otomatis:", err);
     }
 
+    // Setelah klik OK, tampilkan ujian manual
     landscapeWarning.style.display = "none";
     examContainer.style.display = "flex";
   });
 
+  // ▶️ Tombol "Start Test"
   startBtn.addEventListener("click", async () => {
     await goFullscreen();
     welcomeScreen.style.display = "none";
     loginScreen.style.display = "flex";
   });
 
+  // 🧑‍🎓 Saat klik "Mulai Ujian"
   loginForm.addEventListener("submit", async (e) => {
     e.preventDefault();
     const nama = document.getElementById("nama").value.trim();
@@ -312,10 +322,9 @@
       document.getElementById("userClass").textContent = kelas;
       loginScreen.style.display = "none";
       examContainer.style.display = "flex";
-
       await enableWakeLock();
 
-      // 🔒 Kunci orientasi ke landscape bila didukung
+      // 🔒 Kunci orientasi ke landscape (jika didukung)
       if (screen.orientation && screen.orientation.lock) {
         try {
           await screen.orientation.lock('landscape');
@@ -324,10 +333,12 @@
         }
       }
 
+      // ✅ Jalankan pengecekan orientasi (baru tampilkan warning jika perlu)
       checkOrientation();
     }
   });
 
+  // 📤 Tombol "Kirim Jawaban"
   document.getElementById("submitBtn").addEventListener("click", () => {
     const totalSoal = 5;
     const form = document.getElementById("examForm");
@@ -387,6 +398,7 @@
     });
   });
 
+  // 🔙 Jika keluar fullscreen, balik ke login
   document.addEventListener("fullscreenchange", () => {
     if (!document.fullscreenElement) {
       disableWakeLock();
@@ -399,5 +411,6 @@
     }
   });
 </script>
+
 </body>
 </html>
