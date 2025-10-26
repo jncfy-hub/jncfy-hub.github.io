@@ -83,7 +83,13 @@
     display:flex; flex-direction:column;
     justify-content:space-between; overflow-y:auto;
   }
-
+  .question-row > span {
+    display: inline-block;
+    width: 30px; 
+    min-width: 30px;
+    text-align: right;   
+    margin-right: 0.`3rem; 
+  }
   .question-row { display:flex; align-items:center; gap:1.5rem; margin-bottom:0.8rem; font-size:1rem; }
   .options { display:flex; gap:1rem; }
   .options input[type="radio"] { display:none; }
@@ -418,7 +424,7 @@
       if (unanswered.length > 0) {
         Swal.fire({
           title: "Tinjau kembali!",
-          html: `Kamu belum menjawab nomor: <b>${unanswered.join(", ")}</b>`,
+          html: `Belum menjawab nomor: <b>${unanswered.join(", ")}</b>`,
           confirmButtonText: "OK",
           confirmButtonColor: "#007bff"
         });
