@@ -225,9 +225,12 @@
   </div>
 
   <div id="landscapeWarning">
-  <i class="fa-solid fa-rotate fa-spin"></i>
+  <i class="fa-solid fa-rotate"></i>
   <p>🔄 Silakan ubah orientasi ke mode <strong>landscape</strong> untuk melanjutkan ujian.</p>
- </div>
+  <button id="okLandscapeBtn" class="btn btn-primary mt-3 px-4 py-2 fw-semibold">
+    <i class="fa-solid fa-check"></i> OK
+  </button>
+  </div>
 
   <script>
   const welcomeScreen = document.getElementById("welcomeScreen");
@@ -278,7 +281,20 @@
     }
   }
 
+  checkOrientation();
   window.addEventListener("orientationchange", checkOrientation);
+  document.getElementById("okLandscapeBtn").addEventListener("click", async () => {
+    try {
+      if (screen.orientation && screen.orientation.lock) {
+        await screen.orientation.lock("landscape");
+      }
+    } catch (err) {
+      console.warn("Tidak bisa mengunci orientasi secara otomatis:", err);
+    }
+
+    landscapeWarning.style.display = "none";
+    examContainer.style.display = "flex";
+  });
 
   startBtn.addEventListener("click", async () => {
     await goFullscreen();
